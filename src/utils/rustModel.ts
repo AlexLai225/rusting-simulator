@@ -98,29 +98,29 @@ export const INQUIRY_QUESTIONS: InquiryQuestion[] = [
     variableFocus: 'all',
     options: [
       {
-        id: 'opt_1',
-        text: 'Higher temperature (e.g. 50°C), presence of oxygen, and acidic pH (pH 3)',
+        id: 'opt_1_1',
+        text: 'Lower temperature, presence of oxygen, and alkaline condition',
+        isCorrect: false,
+        explanation:
+          'Incorrect. Alkaline pH creates a passivating protective hydroxide layer on iron, and lower temperature decreases molecular kinetic energy, leading to very slow rusting.',
+      },
+      {
+        id: 'opt_1_2',
+        text: 'Higher temperature, absence of oxygen, and acidic condition',
+        isCorrect: false,
+        explanation:
+          'Incorrect. Without oxygen (the necessary cathodic electron acceptor), iron cannot undergo rusting even at higher temperatures or in acidic solutions.',
+      },
+      {
+        id: 'opt_1_3',
+        text: 'Higher temperature, presence of oxygen, and acidic condition',
         isCorrect: true,
         explanation:
-          'Correct! Rusting is an electrochemical oxidation reaction. Higher temperature increases kinetic collision rates, oxygen is the mandatory cathodic electron acceptor, and an acidic pH (pH 3) provides high H+ ion concentration that prevents passivation and accelerates redox electron transfer.',
+          'Correct! Rusting is an electrochemical oxidation reaction. Higher temperature increases kinetic collision rates, oxygen is the mandatory cathodic electron acceptor, and acidic condition accelerates redox electron transfer by preventing protective oxide passivation.',
       },
       {
-        id: 'opt_2',
-        text: 'Lower temperature (25°C), presence of oxygen, and alkaline pH (pH 12)',
-        isCorrect: false,
-        explanation:
-          'Incorrect. Alkaline pH (pH 12) creates a passivating protective layer on iron, and lower temperature decreases molecular kinetic energy, leading to very slow rusting.',
-      },
-      {
-        id: 'opt_3',
-        text: 'Higher temperature (50°C), absence of oxygen, and acidic pH (pH 3)',
-        isCorrect: false,
-        explanation:
-          'Incorrect. Without oxygen (cathodic reactant), iron cannot undergo standard rusting even at high temperatures or in acidic solutions.',
-      },
-      {
-        id: 'opt_4',
-        text: 'Lower temperature (25°C), absence of oxygen, and neutral pH (pH 7)',
+        id: 'opt_1_4',
+        text: 'Lower temperature, absence of oxygen, and neutral condition',
         isCorrect: false,
         explanation:
           'Incorrect. When oxygen is absent, the rate of rusting is 0.0 mg/day regardless of pH and temperature.',
@@ -136,24 +136,24 @@ export const INQUIRY_QUESTIONS: InquiryQuestion[] = [
     options: [
       {
         id: 'opt_o2_1',
-        text: 'Oxygen is an essential reactant; without it, the rate of rusting is virtually zero.',
-        isCorrect: true,
-        explanation:
-          'Correct! Comparing trials where oxygen is Present vs Not Present (with other variables held constant) shows 0.0 mg/day rust formed in the absence of oxygen.',
-      },
-      {
-        id: 'opt_o2_2',
         text: 'Oxygen only slows down rusting by forming an airtight oxide barrier.',
         isCorrect: false,
         explanation:
           'Incorrect. Oxygen is the electron acceptor needed to convert Fe to Fe(OH)3 and hydrated iron(III) oxide (rust).',
       },
       {
+        id: 'opt_o2_2',
+        text: 'Oxygen is an essential reactant; without it, the rate of rusting is virtually zero.',
+        isCorrect: true,
+        explanation:
+          'Correct! Comparing trials where oxygen is Present vs Not Present (with other variables held constant) shows 0.0 mg/day rust formed in the absence of oxygen.',
+      },
+      {
         id: 'opt_o2_3',
         text: 'Oxygen has no measurable effect if the temperature is high.',
         isCorrect: false,
         explanation:
-          'Incorrect. Even at 50°C, if oxygen is absent, iron cannot rust.',
+          'Incorrect. Even at high temperatures, if dissolved oxygen is absent, iron cannot rust.',
       },
     ],
   },
@@ -166,31 +166,31 @@ export const INQUIRY_QUESTIONS: InquiryQuestion[] = [
     options: [
       {
         id: 'opt_ph_1',
-        text: 'Acidic conditions (pH 3) accelerate rusting, while alkaline conditions (pH 12) strongly inhibit it through passivation.',
-        isCorrect: true,
-        explanation:
-          'Correct! Comparing trials with identical temperature and oxygen, pH 3 yields ~2.6x higher rust rate than neutral (pH 7), whereas pH 12 produces near-zero rust due to protective hydroxide passivation.',
-      },
-      {
-        id: 'opt_ph_2',
-        text: 'Alkaline conditions (pH 12) cause the most rapid rusting because base dissolves metals fastest.',
+        text: 'Alkaline conditions cause the most rapid rusting because bases dissolve metals fastest.',
         isCorrect: false,
         explanation:
           'Incorrect. Alkaline pH forms a passivating insoluble film of Fe(OH)2 / Fe3O4 that shields iron from further corrosion.',
       },
       {
-        id: 'opt_ph_3',
-        text: 'Neutral water (pH 7) always rusts faster than acidic solutions (pH 3).',
+        id: 'opt_ph_2',
+        text: 'Neutral water always rusts iron faster than acidic solutions.',
         isCorrect: false,
         explanation:
-          'Incorrect. Acidic solutions supply H+ ions that accelerate the reduction half-reaction and dissolve passivating films.',
+          'Incorrect. Acidic solutions supply H+ ions that accelerate the reduction half-reaction and dissolve passivating oxide films.',
+      },
+      {
+        id: 'opt_ph_3',
+        text: 'Acidic conditions accelerate rusting, while alkaline conditions strongly inhibit it through passivation.',
+        isCorrect: true,
+        explanation:
+          'Correct! Comparing trials with identical temperature and oxygen, acidic condition yields the highest rust rate, whereas alkaline condition produces near-zero rust due to protective hydroxide passivation.',
       },
     ],
   },
   {
     id: 'q4_temp',
     title: 'Effect of Temperature',
-    prompt: 'When oxygen is present and pH is constant, what is the effect of increasing temperature from 25°C to 50°C?',
+    prompt: 'When oxygen is present and pH is constant, what is the effect of increasing temperature?',
     minEvidenceRows: 2,
     variableFocus: 'temperature',
     options: [
@@ -199,7 +199,7 @@ export const INQUIRY_QUESTIONS: InquiryQuestion[] = [
         text: 'Higher temperature significantly increases the rate of rusting due to increased kinetic collision rate.',
         isCorrect: true,
         explanation:
-          'Correct! By holding pH and oxygen constant and raising temperature from 25°C to 50°C, the rate of rust formation approximately doubles according to Arrhenius kinetics.',
+          'Correct! By holding pH and oxygen constant and raising temperature, the rate of rust formation increases significantly according to Arrhenius reaction kinetics.',
       },
       {
         id: 'opt_t_2',

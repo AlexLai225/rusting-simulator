@@ -44,11 +44,10 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
       </div>
 
       <div className="space-y-5">
-        {/* 1. Variable: Temperature Slider (25°C to 50°C) */}
-        <div id="control-temperature" className="space-y-2">
+        {/* 1. Variable: Temperature Buttons (25°C to 50°C) */}
+        <div id="control-temperature" className="space-y-2.5">
           <div className="flex items-center justify-between">
             <label
-              htmlFor="temperature-slider"
               className="text-sm font-semibold text-slate-200 flex items-center gap-2"
             >
               <Thermometer className="w-4 h-4 text-rose-400" />
@@ -64,28 +63,27 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
             </div>
           </div>
 
-          <div className="space-y-1.5 pt-1">
-            <input
-              id="temperature-slider"
-              type="range"
-              min="25"
-              max="50"
-              step="1"
-              value={config.temperature}
-              disabled={isRunning}
-              onChange={(e) =>
-                onChangeConfig({ temperature: Number(e.target.value) })
-              }
-              className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
-            />
-            <div className="flex justify-between text-[11px] text-slate-500 font-mono font-medium px-0.5">
-              <span>25°C (Min)</span>
-              <span>30°C</span>
-              <span>35°C</span>
-              <span>40°C</span>
-              <span>45°C</span>
-              <span>50°C (Max)</span>
-            </div>
+          {/* Temperature Buttons */}
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            {[25, 30, 35, 40, 45, 50].map((t) => (
+              <button
+                key={t}
+                type="button"
+                id={`btn-temp-${t}`}
+                disabled={isRunning}
+                onClick={() => onChangeConfig({ temperature: t })}
+                className={`py-2.5 px-2 text-xs font-mono font-bold rounded-xl border transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                  config.temperature === t
+                    ? 'bg-rose-500/25 text-rose-200 border-rose-500/60 shadow-md shadow-rose-500/20 ring-2 ring-rose-500/40 scale-[1.02]'
+                    : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-slate-100 hover:border-slate-600'
+                }`}
+              >
+                <span className="text-sm">{t}°C</span>
+                <span className="text-[10px] font-normal text-slate-400">
+                  {t === 25 ? 'Min' : t === 50 ? 'Max' : `${t}°`}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -161,7 +159,7 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
             }
             className="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-100 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all cursor-pointer"
           >
-            <option value="Present" className="bg-slate-900 text-slate-100">Present (Aerated / Atmospheric Dissolved O₂)</option>
+            <option value="Present" className="bg-slate-900 text-slate-100">Present (Dissolved Atmospheric Oxygen)</option>
             <option value="Not Present" className="bg-slate-900 text-slate-100">
               Not Present (Boiled Deoxygenated Liquid + Mineral Oil Seal)
             </option>
