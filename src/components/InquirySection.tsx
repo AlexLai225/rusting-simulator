@@ -13,7 +13,6 @@ import {
   BookOpen,
   ArrowRight,
 } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 interface InquirySectionProps {
   trials: TrialResult[];
@@ -62,15 +61,20 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
     let explanation = '';
     if (isOverallCorrect) {
       explanation = chosenOption?.explanation || 'Hypothesis successfully validated.';
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.7 },
+      import('canvas-confetti')
+        .then((module) => {
+          const confettiFunc = module.default || module;
+          if (typeof confettiFunc === 'function') {
+            confettiFunc({
+              particleCount: 80,
+              spread: 70,
+              origin: { y: 0.7 },
+            });
+          }
+        })
+        .catch(() => {
+          // ignore if confetti fails in sandboxed iframe contexts
         });
-      } catch (err) {
-        // ignore if confetti fails in some contexts
-      }
     } else if (claimIsCorrect && !evidenceIsValid) {
       explanation =
         'Your scientific claim is accurate! However, scientific method requires your claim to be substantiated with proper controlled experimental trials. Please review the evidence criteria below and select the appropriate trial rows from the Results Table.';
