@@ -1,0 +1,41 @@
+export type OxygenPresence = 'Present' | 'Not Present';
+export type PHValue = 3 | 7 | 12;
+
+export interface ExperimentConfig {
+  temperature: number; // 25 to 50 °C
+  pH: PHValue;
+  oxygen: OxygenPresence;
+}
+
+export interface DependentVariables {
+  rustRate: number; // mg / day
+  totalRustMass: number; // mg over 7 days
+  surfaceCoverage: number; // % (0 to 100)
+  timeToInitialRustHours: number; // hours until first visible rust
+  severity: 'None' | 'Minimal' | 'Moderate' | 'Heavy' | 'Severe';
+  observation: string;
+}
+
+export interface TrialResult {
+  id: string;
+  trialNumber: number;
+  timestamp: string;
+  config: ExperimentConfig;
+  results: DependentVariables;
+}
+
+export interface InquiryOption {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+  explanation: string;
+}
+
+export interface InquiryQuestion {
+  id: string;
+  title: string;
+  prompt: string;
+  options: InquiryOption[];
+  variableFocus: 'all' | 'temperature' | 'pH' | 'oxygen';
+  minEvidenceRows: number;
+}

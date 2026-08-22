@@ -1,0 +1,6 @@
+{
+  "name": "Rusting Simulation",
+  "description": "Interactive scientific investigation of iron rusting rate under varying temperature, pH, and oxygen conditions with evidence-based data logging and hypothesis analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
