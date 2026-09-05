@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExperimentConfig, DependentVariables } from '../types';
-import { Thermometer, Wind, Droplets, Sparkles, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Thermometer, Wind, Droplets, Sparkles, CheckCircle2 } from 'lucide-react';
 
 interface ApparatusVisualizerProps {
   config: ExperimentConfig;
@@ -424,36 +424,26 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
       </div>
 
       {/* Real-time Metric Readout Cards */}
-      <div className="w-full grid grid-cols-3 gap-2.5 mt-2 z-10">
-        <div className="bg-slate-800/90 rounded-xl p-2.5 border border-slate-700/70 text-center flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 text-[11px] font-medium text-slate-400 mb-0.5">
-            <Droplets className="w-3.5 h-3.5 text-blue-400" />
-            <span>Rust Mass (7d)</span>
+      <div className="w-full grid grid-cols-2 gap-3 mt-2 z-10">
+        <div className="bg-slate-800/90 rounded-xl p-3 border border-slate-700/70 text-center flex flex-col items-center justify-center">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-1">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>Rate of Rusting</span>
           </div>
-          <span className="text-lg font-bold text-slate-100">
-            {currentMass.toFixed(1)}{' '}
-            <span className="text-xs font-normal text-slate-400">mg</span>
-          </span>
-        </div>
-
-        <div className="bg-slate-800/90 rounded-xl p-2.5 border border-slate-700/70 text-center flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 text-[11px] font-medium text-slate-400 mb-0.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Rusting Rate</span>
-          </div>
-          <span className="text-lg font-bold text-amber-400">
+          <span className="text-xl font-bold text-amber-400">
             {effectiveResult ? effectiveResult.rustRate.toFixed(2) : '0.00'}{' '}
             <span className="text-xs font-normal text-slate-400">mg/day</span>
           </span>
         </div>
 
-        <div className="bg-slate-800/90 rounded-xl p-2.5 border border-slate-700/70 text-center flex flex-col items-center justify-center">
-          <div className="flex items-center gap-1 text-[11px] font-medium text-slate-400 mb-0.5">
-            <ShieldAlert className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Surface Coverage</span>
+        <div className="bg-slate-800/90 rounded-xl p-3 border border-slate-700/70 text-center flex flex-col items-center justify-center">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-1">
+            <Droplets className="w-4 h-4 text-blue-400" />
+            <span>Rust Mass (7-Day Total)</span>
           </div>
-          <span className="text-lg font-bold text-emerald-400">
-            {coveragePercent}%
+          <span className="text-xl font-bold text-slate-100">
+            {currentMass.toFixed(1)}{' '}
+            <span className="text-xs font-normal text-slate-400">mg</span>
           </span>
         </div>
       </div>

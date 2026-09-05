@@ -28,7 +28,6 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
       'Oxygen Presence',
       'Rusting Rate (mg/day)',
       'Total Rust Mass (mg)',
-      'Surface Coverage (%)',
       'Time to Initial Rust (hours)',
       'Severity',
       'Observation',
@@ -40,7 +39,6 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
       t.config.oxygen,
       t.results.rustRate,
       t.results.totalRustMass,
-      t.results.surfaceCoverage,
       t.results.timeToInitialRustHours,
       t.results.severity,
       `"${t.results.observation.replace(/"/g, '""')}"`,
@@ -167,7 +165,6 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                   Rust Rate (mg/day)
                 </th>
                 <th className="py-3 px-3">Total Mass (7d)</th>
-                <th className="py-3 px-3">Coverage</th>
                 <th className="py-3 px-3">Severity / Observation</th>
               </tr>
             </thead>
@@ -247,21 +244,6 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                     {/* Dependent: Total Rust Mass */}
                     <td className="py-3 px-3 font-semibold font-mono text-slate-100">
                       {trial.results.totalRustMass.toFixed(1)} mg
-                    </td>
-
-                    {/* Dependent: Surface Coverage */}
-                    <td className="py-3 px-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-12 bg-slate-800 rounded-full h-1.5 overflow-hidden border border-slate-700">
-                          <div
-                            className="bg-amber-500 h-full rounded-full"
-                            style={{ width: `${trial.results.surfaceCoverage}%` }}
-                          />
-                        </div>
-                        <span className="text-[11px] font-medium font-mono text-slate-300">
-                          {trial.results.surfaceCoverage}%
-                        </span>
-                      </div>
                     </td>
 
                     {/* Severity Badge & Brief Observation */}

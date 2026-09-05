@@ -96,6 +96,7 @@ export const INQUIRY_QUESTIONS: InquiryQuestion[] = [
     prompt: 'The rate of rusting will be faster under...',
     minEvidenceRows: 2,
     variableFocus: 'all',
+    questionType: 'multiple-choice',
     options: [
       {
         id: 'opt_1_1',
@@ -128,41 +129,12 @@ export const INQUIRY_QUESTIONS: InquiryQuestion[] = [
     ],
   },
   {
-    id: 'q2_oxygen',
-    title: 'Requirement of Reactants',
-    prompt: 'Based on your trials, what role does oxygen play in the rusting process of iron?',
-    minEvidenceRows: 2,
-    variableFocus: 'oxygen',
-    options: [
-      {
-        id: 'opt_o2_1',
-        text: 'Oxygen only slows down rusting by forming an airtight oxide barrier.',
-        isCorrect: false,
-        explanation:
-          'Incorrect. Oxygen is the electron acceptor needed to convert Fe to Fe(OH)3 and hydrated iron(III) oxide (rust).',
-      },
-      {
-        id: 'opt_o2_2',
-        text: 'Oxygen is an essential reactant; without it, the rate of rusting is virtually zero.',
-        isCorrect: true,
-        explanation:
-          'Correct! Comparing trials where oxygen is Present vs Not Present (with other variables held constant) shows 0.0 mg/day rust formed in the absence of oxygen.',
-      },
-      {
-        id: 'opt_o2_3',
-        text: 'Oxygen has no measurable effect if the temperature is high.',
-        isCorrect: false,
-        explanation:
-          'Incorrect. Even at high temperatures, if dissolved oxygen is absent, iron cannot rust.',
-      },
-    ],
-  },
-  {
-    id: 'q3_ph',
+    id: 'q2_ph',
     title: 'Effect of Solution pH',
     prompt: 'How does solution pH influence the corrosion rate of iron when oxygen is present?',
     minEvidenceRows: 2,
     variableFocus: 'pH',
+    questionType: 'multiple-choice',
     options: [
       {
         id: 'opt_ph_1',
@@ -188,32 +160,41 @@ export const INQUIRY_QUESTIONS: InquiryQuestion[] = [
     ],
   },
   {
+    id: 'q3_reactants',
+    title: 'Requirement of Reactants',
+    prompt: 'Based on your trials, what are the essential conditions required for rusting? Explain briefly why they are needed.',
+    minEvidenceRows: 2,
+    variableFocus: 'oxygen',
+    questionType: 'reactants-input',
+  },
+  {
     id: 'q4_temp',
-    title: 'Effect of Temperature',
+    title: 'Effect of Temperature & Collision Theory',
     prompt: 'When oxygen is present and pH is constant, what is the effect of increasing temperature?',
     minEvidenceRows: 2,
     variableFocus: 'temperature',
+    questionType: 'claim-with-collision-theory',
     options: [
       {
         id: 'opt_t_1',
-        text: 'Higher temperature significantly increases the rate of rusting due to increased kinetic collision rate.',
+        text: 'Higher temperature significantly increases the rate of rusting.',
         isCorrect: true,
         explanation:
-          'Correct! By holding pH and oxygen constant and raising temperature, the rate of rust formation increases significantly according to Arrhenius reaction kinetics.',
+          'Correct! Increasing temperature accelerates the rate of rusting.',
       },
       {
         id: 'opt_t_2',
-        text: 'Higher temperature halts rusting completely because heat destroys iron atoms.',
+        text: 'Higher temperature significantly decreases the rate of rusting.',
         isCorrect: false,
         explanation:
-          'Incorrect. Heat does not destroy iron atoms; it increases molecular kinetic energy and reaction rate.',
+          'Incorrect. Thermal energy accelerates chemical reactions; it does not decrease their rate.',
       },
       {
         id: 'opt_t_3',
-        text: 'Temperature has no observable effect on chemical reaction speed.',
+        text: 'Temperature has no observable effect on the rate of rusting.',
         isCorrect: false,
         explanation:
-          'Incorrect. All chemical reaction rates, including redox corrosion, increase with thermal energy.',
+          'Incorrect. Chemical reaction rates strongly depend on temperature.',
       },
     ],
   },
@@ -225,10 +206,135 @@ export interface EvidenceValidation {
   comparisonDetails: string[];
 }
 
+export interface ReactantsEvaluation {
+  isConditionsCorrect: boolean;
+  isExplanationValid: boolean;
+  isOverallCorrect: boolean;
+  feedback: string;
+  detectedConditions: string[];
+  missingConditions: string[];
+}
+
+export function evaluateReactantsAnswer(conditions: string, explanation: string): ReactantsEvaluation {
+  const normCond = conditions.toLowerCase();
+  const normExp = explanation.toLowerCase();
+
+  const mentionsOxygen = normCond.includes('oxygen') || normCond.includes('o2') || normCond.includes('air') || normExp.includes('oxygen') || normExp.includes('o2');
+  const mentionsWater = normCond.includes('water') || normCond.includes('h2o') || normCond.includes('moisture') || normExp.includes('water') || normExp.includes('h2o') || normExp.includes('moisture');
+
+  const detectedConditions: string[] = [];
+  const missingConditions: string[] = [];
+
+  if (mentionsOxygen) detectedConditions.push('Oxygen (O₂)');
+  else missingConditions.push('Oxygen (O₂)');
+
+  if (mentionsWater) detectedConditions.push('Water (H₂O)');
+  else missingConditions.push('Water (H₂O)');
+
+  const isConditionsCorrect = mentionsOxygen && mentionsWater;
+
+  // Check if explanation indicates they are reactants / react together
+  const mentionsReactants =
+    normExp.includes('reactant') ||
+    normExp.includes('react') ||
+    normExp.includes('oxidiz') ||
+    normExp.includes('redox') ||
+    normExp.includes('reagent') ||
+    normExp.includes('chemical reaction') ||
+    normExp.includes('combine');
+
+  const isExplanationValid = normExp.trim().length >= 10 && mentionsReactants;
+  const isOverallCorrect = isConditionsCorrect && isExplanationValid;
+
+  let feedback = '';
+  if (isOverallCorrect) {
+    feedback =
+      'Excellent scientific reasoning! You correctly identified that both oxygen and water are essential because they are the necessary chemical reactants for the electrochemical oxidation of iron (4 Fe + 3 O₂ + 6 H₂O → 4 Fe(OH)₃).';
+  } else if (!isConditionsCorrect && isExplanationValid) {
+    feedback = `You mentioned that reactants are required, but your answer must explicitly identify both Oxygen and Water as the essential conditions. Missing: ${missingConditions.join(', ')}.`;
+  } else if (isConditionsCorrect && !isExplanationValid) {
+    feedback =
+      'You correctly identified Oxygen and Water as the essential conditions! However, please explain in your explanation that they are the chemical reactants in the redox reaction that oxidizes iron.';
+  } else {
+    feedback =
+      'Rusting requires both Oxygen and Water because they act as the chemical reactants needed to oxidize metallic iron. Please revise your answer to specify both conditions and explain their role as reactants.';
+  }
+
+  return {
+    isConditionsCorrect,
+    isExplanationValid,
+    isOverallCorrect,
+    feedback,
+    detectedConditions,
+    missingConditions,
+  };
+}
+
+export interface CollisionTheoryEvaluation {
+  mentionsKineticEnergy: boolean;
+  mentionsCollisionFrequency: boolean;
+  mentionsEffectiveCollisions: boolean;
+  isValid: boolean;
+  feedback: string;
+}
+
+export function evaluateCollisionTheory(explanation: string): CollisionTheoryEvaluation {
+  const norm = explanation.toLowerCase();
+
+  const mentionsKineticEnergy =
+    norm.includes('kinetic') ||
+    norm.includes('thermal energy') ||
+    norm.includes('energy') ||
+    norm.includes('speed') ||
+    norm.includes('faster') ||
+    norm.includes('velocity');
+
+  const mentionsCollisionFrequency =
+    norm.includes('frequen') ||
+    norm.includes('collide more') ||
+    norm.includes('more collision') ||
+    norm.includes('rate of collision') ||
+    norm.includes('often') ||
+    norm.includes('number of collision');
+
+  const mentionsEffectiveCollisions =
+    norm.includes('effective') ||
+    norm.includes('activation energy') ||
+    norm.includes('successful') ||
+    norm.includes('exceed') ||
+    norm.includes('greater than ea') ||
+    norm.includes('ea');
+
+  const hasLength = norm.trim().length >= 15;
+  const countKeyPoints =
+    (mentionsKineticEnergy ? 1 : 0) +
+    (mentionsCollisionFrequency ? 1 : 0) +
+    (mentionsEffectiveCollisions ? 1 : 0);
+
+  const isValid = hasLength && countKeyPoints >= 2;
+
+  let feedback = '';
+  if (isValid) {
+    feedback =
+      'Superb explanation using Collision Theory! You clearly connected temperature with particle kinetic energy, increased collision frequency, and a higher proportion of effective collisions possessing energy greater than or equal to the activation energy (Ea).';
+  } else {
+    feedback =
+      'To strengthen your Collision Theory explanation, make sure to explain: (1) Higher temperature gives reactant particles greater average kinetic energy, so they move faster; (2) Particles collide more frequently; (3) A larger fraction of collisions have sufficient energy (≥ activation energy) to result in effective chemical reactions.';
+  }
+
+  return {
+    mentionsKineticEnergy,
+    mentionsCollisionFrequency,
+    mentionsEffectiveCollisions,
+    isValid,
+    feedback,
+  };
+}
+
 export function validateEvidence(
   question: InquiryQuestion,
   selectedTrials: TrialResult[],
-  selectedOptionId: string
+  selectedOptionId?: string
 ): EvidenceValidation {
   if (selectedTrials.length < question.minEvidenceRows) {
     return {
@@ -243,12 +349,11 @@ export function validateEvidence(
       `Trial #${t.trialNumber}: [Temp: ${t.config.temperature}°C, pH: ${t.config.pH}, O₂: ${t.config.oxygen}] → Rust Rate: ${t.results.rustRate} mg/day (${t.results.severity})`
   );
 
-  // Check if student selected an option
-  if (!selectedOptionId) {
+  // Check if student selected an option (for multiple-choice or claim-based questions)
+  if (question.questionType !== 'reactants-input' && !selectedOptionId) {
     return {
       isValid: false,
-      message: 'Please choose an answer option before submitting your claim.',
-      comparisonDetails,
+      message: 'Please choose an answer option before submitting your claim.',      comparisonDetails,
     };
   }
 

@@ -31,11 +31,14 @@ export interface InquiryOption {
   explanation: string;
 }
 
+export type QuestionType = 'multiple-choice' | 'reactants-input' | 'claim-with-collision-theory';
+
 export interface InquiryQuestion {
   id: string;
   title: string;
   prompt: string;
-  options: InquiryOption[];
+  questionType?: QuestionType;
+  options?: InquiryOption[];
   variableFocus: 'all' | 'temperature' | 'pH' | 'oxygen';
   minEvidenceRows: number;
 }
