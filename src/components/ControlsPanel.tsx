@@ -44,7 +44,7 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
       </div>
 
       <div className="space-y-5">
-        {/* 1. Variable: Temperature Buttons (25°C to 50°C) */}
+        {/* 1. Variable: Temperature Buttons (25°C, 35°C, 45°C) */}
         <div id="control-temperature" className="space-y-2.5">
           <div className="flex items-center justify-between">
             <label
@@ -58,29 +58,29 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
                 {config.temperature}°C
               </span>
               <span className="text-[11px] text-rose-300/80 font-normal">
-                ({config.temperature <= 28 ? 'Room Temp' : config.temperature >= 45 ? 'High Heat' : 'Warm'})
+                ({config.temperature <= 25 ? 'Room Temp' : config.temperature >= 45 ? 'High Temp' : 'Warm'})
               </span>
             </div>
           </div>
 
           {/* Temperature Buttons */}
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-            {[25, 30, 35, 40, 45, 50].map((t) => (
+          <div className="grid grid-cols-3 gap-3">
+            {[25, 35, 45].map((t) => (
               <button
                 key={t}
                 type="button"
                 id={`btn-temp-${t}`}
                 disabled={isRunning}
                 onClick={() => onChangeConfig({ temperature: t })}
-                className={`py-2.5 px-2 text-xs font-mono font-bold rounded-xl border transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`py-3 px-2.5 text-xs font-mono font-bold rounded-xl border transition-all flex flex-col items-center justify-center gap-1 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
                   config.temperature === t
                     ? 'bg-rose-500/25 text-rose-200 border-rose-500/60 shadow-md shadow-rose-500/20 ring-2 ring-rose-500/40 scale-[1.02]'
                     : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-slate-100 hover:border-slate-600'
                 }`}
               >
-                <span className="text-sm">{t}°C</span>
-                <span className="text-[10px] font-normal text-slate-400">
-                  {t === 25 ? 'Min' : t === 50 ? 'Max' : `${t}°`}
+                <span className="text-base font-extrabold">{t}°C</span>
+                <span className="text-[11px] font-normal text-slate-400">
+                  {t === 25 ? 'Room (25°C)' : t === 35 ? 'Warm (35°C)' : 'High (45°C)'}
                 </span>
               </button>
             ))}

@@ -288,21 +288,8 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
               </text>
             </g>
           ) : (
-            /* Open to atmosphere + dissolved oxygen bubble stream */
-            <g id="aerated-bubbles">
-              {/* Open beaker top note */}
-              <text
-                x="200"
-                y="60"
-                textAnchor="middle"
-                fill="#38bdf8"
-                fontSize="9"
-                fontFamily="sans-serif"
-                fontWeight="600"
-              >
-                ☁ Dissolved Oxygen (O₂) Present
-              </text>
-              {/* Bubbles in liquid */}
+            /* Bubbles in liquid */
+            <g id="aerated-bubbles-liquid">
               <circle cx="160" cy="210" r="3.5" fill="#bae6fd" opacity="0.75" />
               <circle cx="155" cy="180" r="2.5" fill="#bae6fd" opacity="0.6" />
               <circle cx="240" cy="230" r="3" fill="#bae6fd" opacity="0.7" />
@@ -420,6 +407,36 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
               {temperature}°C
             </text>
           </g>
+
+          {/* 9. Foreground Oxygen Label (Rendered in front of all apparatus parts) */}
+          {oxygen === 'Present' && (
+            <g id="aerated-bubbles">
+              {/* Protective backdrop badge so thermometer stem stays neatly behind the text */}
+              <rect
+                x="95"
+                y="48"
+                width="210"
+                height="22"
+                rx="11"
+                fill="#090d16"
+                fillOpacity="0.94"
+                stroke="#0284c7"
+                strokeWidth="1.2"
+                strokeOpacity="0.8"
+              />
+              <text
+                x="200"
+                y="63"
+                textAnchor="middle"
+                fill="#38bdf8"
+                fontSize="9.5"
+                fontFamily="sans-serif"
+                fontWeight="700"
+              >
+                ☁ Dissolved Oxygen (O₂) Present
+              </text>
+            </g>
+          )}
         </svg>
       </div>
 
@@ -456,7 +473,9 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
             <strong className="text-slate-100 font-semibold">
               Trial Observation ({effectiveResult.severity} Rust):{' '}
             </strong>
-            <span>{effectiveResult.observation}</span>
+            <span className="text-amber-300 font-medium leading-relaxed">
+              {effectiveResult.observation}
+            </span>
           </div>
         </div>
       )}

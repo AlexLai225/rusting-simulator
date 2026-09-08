@@ -68,7 +68,7 @@ export const ScientificTheoryModal: React.FC<ScientificTheoryModalProps> = ({
               <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 space-y-1">
                 <div className="font-bold text-rose-400 flex items-center gap-1.5 text-xs">
                   <Flame className="w-3.5 h-3.5" />
-                  Independent: Temperature (25°C - 50°C)
+                  Independent: Temperature (25°C, 35°C, 45°C)
                 </div>
                 <p className="text-xs text-slate-400">
                   Higher thermal kinetic energy increases molecular collision frequency and reaction rate (Arrhenius relation: k = A·e^(-Ea/RT)).

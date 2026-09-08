@@ -11,7 +11,7 @@ export function calculateRustResults(config: ExperimentConfig): DependentVariabl
       timeToInitialRustHours: 0,
       severity: 'None',
       observation:
-        'No rust formed. The iron nail preserved its polished metallic luster. Dissolved oxygen is an essential reactant for the electrochemical oxidation of iron.',
+        'No brown rust formed. The iron nail preserved its polished metallic luster. Dissolved oxygen is an essential reactant for the electrochemical oxidation of iron.',
     };
   }
 
@@ -60,23 +60,23 @@ export function calculateRustResults(config: ExperimentConfig): DependentVariabl
 
   if (totalMass === 0) {
     severity = 'None';
-    observation = 'No rust observed.';
+    observation = 'No brown rust observed. The metal surface remained completely unchanged.';
   } else if (totalMass < 10) {
     severity = 'Minimal';
     observation =
-      'Very faint superficial speckles of iron oxide. High alkalinity (pH 12) passivated the metal surface with a protective oxide/hydroxide layer, strongly suppressing oxidation.';
+      'Very faint brown specks of rust. High alkalinity (pH 12) passivated the metal surface with a protective oxide/hydroxide layer, strongly suppressing oxidation.';
   } else if (totalMass < 45) {
     severity = 'Moderate';
     observation =
-      'Noticeable uniform orange-brown rust coating along the nail shaft. Standard atmospheric oxidation occurred with dissolved oxygen.';
+      'Noticeable uniform brown rust coating along the nail shaft. Standard atmospheric oxidation occurred with dissolved oxygen.';
   } else if (totalMass < 90) {
     severity = 'Heavy';
     observation =
-      'Dense reddish-brown rust layer with noticeable flaking sediment settling at the bottom. Elevated temperature boosted reaction kinetics.';
+      'Dense brown rust layer with noticeable flaking brown sediment settling at the bottom. Elevated temperature boosted reaction kinetics.';
   } else {
     severity = 'Severe';
     observation =
-      'Extensive dark reddish-brown corrosion crust with heavy flaky precipitates and cloudiness. Combination of acidic environment (pH 3) and high thermal energy (temperature) dramatically accelerated iron oxidation.';
+      'Extensive dark brown rust crust with heavy flaky brown precipitates and cloudiness. Combination of acidic environment (pH 3) and high thermal energy (temperature) dramatically accelerated iron oxidation.';
   }
 
   return {
