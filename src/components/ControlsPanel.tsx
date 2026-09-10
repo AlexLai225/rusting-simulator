@@ -29,9 +29,6 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
             <FlaskConical className="w-5 h-5 text-cyan-400" />
             Independent Variables Setup
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Configure experimental parameters to measure the dependent corrosion rate
-          </p>
         </div>
         <button
           id="btn-open-theory"
@@ -72,16 +69,13 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
                 id={`btn-temp-${t}`}
                 disabled={isRunning}
                 onClick={() => onChangeConfig({ temperature: t })}
-                className={`py-3 px-2.5 text-xs font-mono font-bold rounded-xl border transition-all flex flex-col items-center justify-center gap-1 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`py-3 px-2.5 text-xs font-mono font-bold rounded-xl border transition-all flex items-center justify-center cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
                   config.temperature === t
                     ? 'bg-rose-500/25 text-rose-200 border-rose-500/60 shadow-md shadow-rose-500/20 ring-2 ring-rose-500/40 scale-[1.02]'
                     : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-slate-100 hover:border-slate-600'
                 }`}
               >
                 <span className="text-base font-extrabold">{t}°C</span>
-                <span className="text-[11px] font-normal text-slate-400">
-                  {t === 25 ? 'Room (25°C)' : t === 35 ? 'Warm (35°C)' : 'High (45°C)'}
-                </span>
               </button>
             ))}
           </div>

@@ -167,20 +167,12 @@ export default function App() {
           id="investigation-overview-card"
           className="w-full bg-slate-900/90 rounded-2xl p-5 sm:p-6 shadow-xl border border-slate-800 backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
-          <div className="space-y-1.5 flex-1 w-full">
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-md border border-cyan-500/20">
-                Scientific Investigation Protocol
-              </span>
-              <span className="text-xs text-slate-400 font-medium">
-                Standard 7-Day Iron Nail Incubation
-              </span>
-            </div>
+          <div className="space-y-2 flex-1 w-full">
             <h2 className="text-base sm:text-lg font-bold text-slate-100">
               How do environmental variables influence the rate of iron rusting?
             </h2>
             <div className="text-xs sm:text-sm text-slate-400 w-full leading-relaxed">
-              <span className="text-slate-200 font-semibold">Independent Variables:</span> Temperature (25°C - 50°C), Solution pH (3, 7, 12), Presence of Oxygen (Present / Not Present).<br />
+              <span className="text-slate-200 font-semibold">Independent Variables:</span> Temperature (25°C - 45°C), Solution pH (3, 7, 12), Presence of Oxygen (Present / Not Present).<br />
               <span className="text-cyan-300 font-semibold">Designed Dependent Variable:</span> Rate of Rusting (mg/day) & Total Rust Mass Formed (mg).
             </div>
           </div>

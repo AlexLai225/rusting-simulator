@@ -2,7 +2,7 @@ export type OxygenPresence = 'Present' | 'Not Present';
 export type PHValue = 3 | 7 | 12;
 
 export interface ExperimentConfig {
-  temperature: number; // 25 to 50 °C
+  temperature: number; // 25 to 45 °C (25, 35, 45 °C)
   pH: PHValue;
   oxygen: OxygenPresence;
 }

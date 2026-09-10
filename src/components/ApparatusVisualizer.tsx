@@ -408,16 +408,16 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
             </text>
           </g>
 
-          {/* 9. Foreground Oxygen Label (Rendered in front of all apparatus parts) */}
+          {/* 9. Foreground Oxygen Label (Rendered in front of all apparatus parts, elevated above thermometer) */}
           {oxygen === 'Present' && (
             <g id="aerated-bubbles">
-              {/* Protective backdrop badge so thermometer stem stays neatly behind the text */}
+              {/* Protective backdrop badge elevated above thermometer for clear readability */}
               <rect
                 x="95"
-                y="48"
+                y="12"
                 width="210"
-                height="22"
-                rx="11"
+                height="20"
+                rx="10"
                 fill="#090d16"
                 fillOpacity="0.94"
                 stroke="#0284c7"
@@ -426,10 +426,10 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
               />
               <text
                 x="200"
-                y="63"
+                y="25.5"
                 textAnchor="middle"
                 fill="#38bdf8"
-                fontSize="9.5"
+                fontSize="9"
                 fontFamily="sans-serif"
                 fontWeight="700"
               >
