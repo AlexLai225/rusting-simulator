@@ -1,3 +1,4 @@
+export type Language = 'en' | 'zh';
 export type OxygenPresence = 'Present' | 'Not Present';
 export type PHValue = 3 | 7 | 12;
 
@@ -14,6 +15,7 @@ export interface DependentVariables {
   timeToInitialRustHours: number; // hours until first visible rust
   severity: 'None' | 'Minimal' | 'Moderate' | 'Heavy' | 'Severe';
   observation: string;
+  observationZh?: string;
 }
 
 export interface TrialResult {

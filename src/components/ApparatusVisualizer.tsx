@@ -1,12 +1,14 @@
 import React from 'react';
 import { ExperimentConfig, DependentVariables } from '../types';
 import { Thermometer, Wind, Droplets, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Language, translations } from '../utils/translations';
 
 interface ApparatusVisualizerProps {
   config: ExperimentConfig;
   currentResult: DependentVariables | null;
   isRunning: boolean;
   simulationDay: number;
+  lang?: Language;
 }
 
 export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
@@ -14,8 +16,11 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
   currentResult,
   isRunning,
   simulationDay,
+  lang = 'en',
 }) => {
   const { temperature, pH, oxygen } = config;
+  const t = translations[lang];
+  const isZh = lang === 'zh';
 
   // Visual calculations
   const effectiveResult = currentResult;
@@ -33,25 +38,39 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
 
   // Liquid color based on pH
   let liquidColor = 'rgba(219, 234, 254, 0.55)'; // pH 7 pale blue
-  let liquidLabel = 'Neutral Solution (pH 7.0)';
+  let liquidLabel = t.liquidNeutral;
   let liquidBorder = '#93c5fd';
 
   if (pH === 3) {
     liquidColor = 'rgba(254, 215, 170, 0.65)'; // pH 3 warm amber
-    liquidLabel = 'Dilute Acidic Solution (pH 3.0)';
+    liquidLabel = t.liquidAcidic;
     liquidBorder = '#fdba74';
   } else if (pH === 12) {
     liquidColor = 'rgba(233, 213, 255, 0.6)'; // pH 12 pale purple
-    liquidLabel = 'Alkaline Solution (pH 12.0)';
+    liquidLabel = t.liquidAlkaline;
     liquidBorder = '#d8b4fe';
   }
 
   // Rust color shades
-  const rustColor = '#c2410c'; // rich rust orange-red
+  const rustColor = '#c2410c';
   const rustDark = '#7c2d12';
 
   // Heat glow opacity
-  const heatIntensity = (temperature - 25) / 25; // 0 to 1
+  const heatIntensity = (temperature - 25) / 20; // 0 to 1
+
+  const localizedSeverity = effectiveResult
+    ? isZh
+      ? effectiveResult.severity === 'None'
+        ? t.severityNone
+        : effectiveResult.severity === 'Minimal'
+        ? t.severityMinimal
+        : effectiveResult.severity === 'Moderate'
+        ? t.severityModerate
+        : effectiveResult.severity === 'Heavy'
+        ? t.severityHeavy
+        : t.severitySevere
+      : effectiveResult.severity
+    : '';
 
   return (
     <div
@@ -73,18 +92,18 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
           <h3 className="font-semibold text-sm tracking-wide text-slate-200 uppercase">
-            Laboratory Reaction Chamber
+            {t.reactionChamberTitle}
           </h3>
         </div>
         <div className="flex items-center gap-3 text-xs">
           {isRunning ? (
             <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30 flex items-center gap-1.5 animate-pulse">
               <Sparkles className="w-3.5 h-3.5" />
-              Simulating: Day {simulationDay} of 7
+              {t.simulatingDayOf(simulationDay)}
             </span>
           ) : (
             <span className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 font-medium border border-slate-700">
-              7-Day Observation Period
+              {t.observationPeriod}
             </span>
           )}
         </div>
@@ -118,135 +137,107 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
               id="rustPattern"
               x="0"
               y="0"
-              width="20"
-              height="20"
+              width="10"
+              height="10"
               patternUnits="userSpaceOnUse"
             >
-              <circle cx="5" cy="5" r="3" fill="#b45309" opacity="0.85" />
-              <circle cx="15" cy="12" r="4" fill="#c2410c" opacity="0.9" />
-              <circle cx="10" cy="18" r="2.5" fill="#78350f" opacity="0.8" />
-              <rect x="2" y="8" width="6" height="3" rx="1" fill="#ea580c" opacity="0.75" />
-              <circle cx="16" cy="4" r="2" fill="#9a3412" opacity="0.85" />
+              <rect width="10" height="10" fill="transparent" />
+              <circle cx="2" cy="2" r="1.5" fill="#9a3412" opacity="0.9" />
+              <circle cx="7" cy="6" r="1.8" fill="#7c2d12" opacity="0.95" />
+              <circle cx="4" cy="8" r="1.2" fill="#c2410c" opacity="0.85" />
             </pattern>
-
-            {/* Heating coil glow filter */}
-            <filter id="heatGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
           </defs>
 
-          {/* 1. Hotplate / Heating mantle at bottom */}
-          <rect
-            x="80"
-            y="290"
-            width="240"
-            height="32"
-            rx="6"
-            fill="#1e293b"
-            stroke="#334155"
-            strokeWidth="2"
-          />
-          {/* Heating element glow */}
-          <line
-            x1="100"
-            y1="298"
-            x2="300"
-            y2="298"
-            stroke={heatIntensity > 0 ? '#ef4444' : '#475569'}
-            strokeWidth={3 + heatIntensity * 3}
-            strokeLinecap="round"
-            filter={heatIntensity > 0 ? 'url(#heatGlow)' : undefined}
-            opacity={0.3 + heatIntensity * 0.7}
-            className="transition-all duration-500"
-          />
-          <text
-            x="200"
-            y="314"
-            textAnchor="middle"
-            fill="#94a3b8"
-            fontSize="10"
-            fontFamily="sans-serif"
-            fontWeight="bold"
-          >
-            HEATING STAGE: {temperature}°C
-          </text>
-
-          {/* Thermal convection waves if hot */}
-          {temperature >= 35 && (
-            <g opacity={heatIntensity} className="transition-opacity duration-500">
-              <path
-                d="M140 285 Q135 270 140 255"
-                stroke="#f97316"
-                strokeWidth="1.5"
-                fill="none"
-                strokeDasharray="4,4"
-                opacity="0.6"
-              />
-              <path
-                d="M200 285 Q195 270 200 255"
-                stroke="#f97316"
-                strokeWidth="1.5"
-                fill="none"
-                strokeDasharray="4,4"
-                opacity="0.8"
-              />
-              <path
-                d="M260 285 Q265 270 260 255"
-                stroke="#f97316"
-                strokeWidth="1.5"
-                fill="none"
-                strokeDasharray="4,4"
-                opacity="0.6"
-              />
-            </g>
-          )}
-
-          {/* 2. Glass Beaker Outer Outline */}
-          <path
-            d="M 120 70 L 115 70 L 115 80 L 120 80 L 120 270 Q 120 285 135 285 L 265 285 Q 280 285 280 270 L 280 80 L 285 80 L 285 70 L 280 70 Z"
-            fill="none"
-            stroke="#64748b"
-            strokeWidth="3.5"
-            strokeLinejoin="round"
-          />
-
-          {/* 3. Liquid inside Beaker */}
-          <path
-            d="M 122 130 L 122 270 Q 122 283 135 283 L 265 283 Q 278 283 278 270 L 278 130 Z"
-            fill={liquidColor}
-            className="transition-colors duration-500"
-          />
-          {/* Liquid meniscus surface line */}
-          <ellipse
-            cx="200"
-            cy="130"
-            rx="78"
-            ry="6"
-            fill={liquidColor}
-            stroke={liquidBorder}
-            strokeWidth="1.5"
-          />
-
-          {/* Graduation lines on beaker */}
-          <g stroke="#94a3b8" strokeWidth="1.5" opacity="0.6">
-            <line x1="122" y1="160" x2="140" y2="160" />
-            <line x1="122" y1="190" x2="135" y2="190" />
-            <line x1="122" y1="220" x2="140" y2="220" />
-            <line x1="122" y1="250" x2="135" y2="250" />
-            <text x="145" y="163" fill="#94a3b8" fontSize="8" fontFamily="sans-serif">
-              150 mL
-            </text>
-            <text x="145" y="223" fill="#94a3b8" fontSize="8" fontFamily="sans-serif">
-              100 mL
-            </text>
+          {/* 1. Heating Element Base (Heat stage) */}
+          <g id="heating-element" transform="translate(100, 290)">
+            <rect
+              x="0"
+              y="0"
+              width="200"
+              height="18"
+              rx="6"
+              fill="#1e293b"
+              stroke="#334155"
+              strokeWidth="1.5"
+            />
+            {/* Heating coil slots glowing with temperature */}
+            <line
+              x1="25"
+              y1="9"
+              x2="175"
+              y2="9"
+              stroke={temperature > 30 ? '#ef4444' : '#475569'}
+              strokeWidth="4"
+              strokeDasharray="6,4"
+              strokeLinecap="round"
+              className="transition-colors duration-500"
+            />
+            {temperature > 30 && (
+              <text
+                x="100"
+                y="-4"
+                textAnchor="middle"
+                fill="#f87171"
+                fontSize="8"
+                fontWeight="bold"
+                fontFamily="sans-serif"
+                className="animate-pulse"
+              >
+                {isZh ? '🔥 恆溫加熱底座' : '🔥 THERMAL HEATING STAGE'}
+              </text>
+            )}
           </g>
 
-          {/* 4. Oxygen condition visuals */}
+          {/* 2. Glass Beaker (250 mL Pyrex beaker) */}
+          <g id="glass-beaker">
+            {/* Beaker lip and spout */}
+            <path
+              d="M 115 110 L 122 110 L 122 270 Q 122 282 134 282 L 266 282 Q 278 282 278 270 L 278 110 L 285 110"
+              fill="none"
+              stroke="#64748b"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            />
+            {/* Beaker glass background fill */}
+            <path
+              d="M 122 110 L 122 270 Q 122 282 134 282 L 266 282 Q 278 282 278 270 L 278 110 Z"
+              fill="url(#glassGrad)"
+              opacity="0.25"
+            />
+
+            {/* Volume graduation lines */}
+            <line x1="124" y1="150" x2="140" y2="150" stroke="#94a3b8" strokeWidth="1" strokeOpacity="0.7" />
+            <text x="145" y="153" fill="#94a3b8" fontSize="8" fontFamily="monospace">200ml</text>
+            <line x1="124" y1="185" x2="135" y2="185" stroke="#94a3b8" strokeWidth="1" strokeOpacity="0.5" />
+            <line x1="124" y1="215" x2="140" y2="215" stroke="#94a3b8" strokeWidth="1" strokeOpacity="0.7" />
+            <text x="145" y="218" fill="#94a3b8" fontSize="8" fontFamily="monospace">100ml</text>
+          </g>
+
+          {/* 3. Aqueous Solution Fill */}
+          <g id="aqueous-solution">
+            <path
+              d="M 124 135 L 124 270 Q 124 280 134 280 L 266 280 Q 276 280 276 270 L 276 135 Z"
+              fill={liquidColor}
+              className="transition-colors duration-700"
+            />
+            {/* Meniscus surface line */}
+            <ellipse
+              cx="200"
+              cy="135"
+              rx="76"
+              ry="5"
+              fill={liquidBorder}
+              fillOpacity="0.4"
+              stroke={liquidBorder}
+              strokeWidth="1.5"
+            />
+          </g>
+
+          {/* 4. Oxygen Environment Setup */}
           {oxygen === 'Not Present' ? (
-            /* Airtight rubber stopper + Floating mineral oil layer */
-            <g id="anoxic-layer">
-              {/* Stopper at beaker top */}
+            /* Boiled + Sealed de-aerated water with oil barrier */
+            <g id="deoxygenated-barrier">
+              {/* Rubber stopper seal */}
               <polygon
                 points="115,70 285,70 270,95 130,95"
                 fill="#1e293b"
@@ -263,7 +254,7 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
                 fontWeight="bold"
                 fontFamily="sans-serif"
               >
-                AIRTIGHT SEAL
+                {isZh ? '密閉氣密膠塞' : 'AIRTIGHT SEAL'}
               </text>
 
               {/* Floating mineral oil barrier */}
@@ -284,7 +275,7 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
                 fontWeight="bold"
                 fontFamily="sans-serif"
               >
-                Mineral Oil Barrier (No O₂)
+                {isZh ? '礦物油隔絕層 (阻隔空氣與氧氣)' : 'Mineral Oil Barrier (No O₂)'}
               </text>
             </g>
           ) : (
@@ -327,7 +318,7 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
                 <polygon
                   points="-9,-65 9,-65 6,70 0,85 -6,70"
                   fill={rustColor}
-                  opacity={coveragePercent / 100 * 0.85}
+                  opacity={(coveragePercent / 100) * 0.85}
                 />
                 {/* Textured rust spots */}
                 <polygon
@@ -408,10 +399,9 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
             </text>
           </g>
 
-          {/* 9. Foreground Oxygen Label (Rendered in front of all apparatus parts, elevated above thermometer) */}
+          {/* 9. Foreground Oxygen Label */}
           {oxygen === 'Present' && (
             <g id="aerated-bubbles">
-              {/* Protective backdrop badge elevated above thermometer for clear readability */}
               <rect
                 x="95"
                 y="12"
@@ -433,7 +423,7 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
                 fontFamily="sans-serif"
                 fontWeight="700"
               >
-                ☁ Dissolved Oxygen (O₂) Present
+                ☁ {t.oxygenPresentBadge}
               </text>
             </g>
           )}
@@ -445,22 +435,22 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
         <div className="bg-slate-800/90 rounded-xl p-3 border border-slate-700/70 text-center flex flex-col items-center justify-center">
           <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-1">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Rate of Rusting</span>
+            <span>{t.rustRateLabel}</span>
           </div>
           <span className="text-xl font-bold text-amber-400">
             {effectiveResult ? effectiveResult.rustRate.toFixed(2) : '0.00'}{' '}
-            <span className="text-xs font-normal text-slate-400">mg/day</span>
+            <span className="text-xs font-normal text-slate-400">{t.mgPerDayUnit}</span>
           </span>
         </div>
 
         <div className="bg-slate-800/90 rounded-xl p-3 border border-slate-700/70 text-center flex flex-col items-center justify-center">
           <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-1">
             <Droplets className="w-4 h-4 text-blue-400" />
-            <span>Rust Mass (7-Day Total)</span>
+            <span>{t.rustMassLabel}</span>
           </div>
           <span className="text-xl font-bold text-slate-100">
             {currentMass.toFixed(1)}{' '}
-            <span className="text-xs font-normal text-slate-400">mg</span>
+            <span className="text-xs font-normal text-slate-400">{t.mgUnit}</span>
           </span>
         </div>
       </div>
@@ -471,10 +461,10 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
           <CheckCircle2 className="w-4 h-4 text-sky-400 mt-0.5 shrink-0" />
           <div>
             <strong className="text-slate-100 font-semibold">
-              Trial Observation ({effectiveResult.severity} Rust):{' '}
+              {isZh ? `實驗觀察 (${localizedSeverity})：` : `Trial Observation (${localizedSeverity} Rust): `}
             </strong>
             <span className="text-amber-300 font-medium leading-relaxed">
-              {effectiveResult.observation}
+              {isZh && effectiveResult.observationZh ? effectiveResult.observationZh : effectiveResult.observation}
             </span>
           </div>
         </div>

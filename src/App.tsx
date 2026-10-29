@@ -6,9 +6,22 @@ import { ControlsPanel } from './components/ControlsPanel';
 import { ResultsTable } from './components/ResultsTable';
 import { InquirySection } from './components/InquirySection';
 import { ScientificTheoryModal } from './components/ScientificTheoryModal';
-import { FlaskConical, Beaker, HelpCircle, RefreshCw, BarChart2 } from 'lucide-react';
+import { FlaskConical, HelpCircle, Globe } from 'lucide-react';
+import { Language, translations } from './utils/translations';
 
 export default function App() {
+  // Language state (defaults to Traditional Chinese as requested by user, with toggle to English)
+  const [lang, setLang] = useState<Language>(() => {
+    try {
+      const stored = localStorage.getItem('preferred_lang') as Language;
+      return stored === 'en' || stored === 'zh' ? stored : 'zh';
+    } catch {
+      return 'zh';
+    }
+  });
+
+  const t = translations[lang];
+
   // State for experimental configuration (Independent variables)
   const [config, setConfig] = useState<ExperimentConfig>({
     temperature: 25,
@@ -105,7 +118,7 @@ export default function App() {
   };
 
   const handleSelectAllTrials = () => {
-    setSelectedTrialIds(trials.map((t) => t.id));
+    setSelectedTrialIds(trials.map((tr) => tr.id));
   };
 
   const handleClearSelectedTrials = () => {
@@ -114,9 +127,19 @@ export default function App() {
 
   const handleClearAllTrials = () => {
     if (trials.length === 0) return;
-    if (window.confirm('Are you sure you want to reset all logged experimental trials?')) {
+    if (window.confirm(t.confirmReset)) {
       setTrials([]);
       setSelectedTrialIds([]);
+    }
+  };
+
+  const toggleLanguage = () => {
+    const nextLang: Language = lang === 'en' ? 'zh' : 'en';
+    setLang(nextLang);
+    try {
+      localStorage.setItem('preferred_lang', nextLang);
+    } catch {
+      // ignore
     }
   };
 
@@ -135,26 +158,40 @@ export default function App() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base sm:text-lg font-bold text-slate-100 leading-tight tracking-tight">
-                  Rusting Rate Investigation Lab
+                  {t.appTitle}
                 </h1>
                 <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  v2.4 SIMULATION
+                  {t.versionBadge}
                 </span>
               </div>
               <p className="text-[11px] sm:text-xs text-slate-400 hidden sm:block">
-                Electrochemical redox modeling • Independent variables: Temp, pH, O₂
+                {t.appSubtitle}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5">
+            {/* Language Switcher Interconversion Button */}
+            <button
+              id="header-lang-btn"
+              type="button"
+              onClick={toggleLanguage}
+              className="text-xs font-semibold text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              title={lang === 'en' ? '切換至繁體中文版' : 'Switch to English Version'}
+            >
+              <Globe className="w-4 h-4 text-cyan-400" />
+              <span>{t.switchLangText}</span>
+            </button>
+
+            {/* Scientific Guide Button */}
             <button
               id="header-theory-btn"
+              type="button"
               onClick={() => setIsTheoryOpen(true)}
-              className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-xs"
+              className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
             >
               <HelpCircle className="w-4 h-4" />
-              <span>Scientific Guide</span>
+              <span>{t.scientificGuide}</span>
             </button>
           </div>
         </div>
@@ -169,18 +206,18 @@ export default function App() {
         >
           <div className="space-y-2 flex-1 w-full">
             <h2 className="text-base sm:text-lg font-bold text-slate-100">
-              How do environmental variables influence the rate of iron rusting?
+              {t.overviewTitle}
             </h2>
             <div className="text-xs sm:text-sm text-slate-400 w-full leading-relaxed">
-              <span className="text-slate-200 font-semibold">Independent Variables:</span> Temperature (25°C - 45°C), Solution pH (3, 7, 12), Presence of Oxygen (Present / Not Present).<br />
-              <span className="text-cyan-300 font-semibold">Designed Dependent Variable:</span> Rate of Rusting (mg/day) & Total Rust Mass Formed (mg).
+              <span className="text-slate-200 font-semibold">{t.independentVarsLabel}</span> {t.independentVarsDesc}<br />
+              <span className="text-cyan-300 font-semibold">{t.dependentVarLabel}</span> {t.dependentVarDesc}
             </div>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right bg-slate-950/60 px-4 py-2.5 rounded-xl border border-slate-800">
-              <div className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Logged Trials</div>
-              <div className="text-lg font-bold text-cyan-400 font-mono">{trials.length} Recorded</div>
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">{t.loggedTrials}</div>
+              <div className="text-lg font-bold text-cyan-400 font-mono">{trials.length} {t.trialsRecorded}</div>
             </div>
           </div>
         </section>
@@ -194,6 +231,7 @@ export default function App() {
               currentResult={currentResult}
               isRunning={isRunning}
               simulationDay={simulationDay}
+              lang={lang}
             />
           </div>
 
@@ -205,6 +243,7 @@ export default function App() {
               onRunTrial={handleRunTrial}
               isRunning={isRunning}
               onOpenTheory={() => setIsTheoryOpen(true)}
+              lang={lang}
             />
           </div>
         </section>
@@ -218,6 +257,7 @@ export default function App() {
             onSelectAllTrials={handleSelectAllTrials}
             onClearSelectedTrials={handleClearSelectedTrials}
             onClearAllTrials={handleClearAllTrials}
+            lang={lang}
           />
         </section>
 
@@ -227,6 +267,7 @@ export default function App() {
             trials={trials}
             selectedTrialIds={selectedTrialIds}
             requiredTrialsCount={2}
+            lang={lang}
           />
         </section>
       </main>
@@ -234,8 +275,8 @@ export default function App() {
       {/* Footer */}
       <footer className="bg-slate-900/60 border-t border-slate-800/80 mt-12 py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Rusting Rate Investigation Simulation • High School Chemistry & Physical Science</span>
-          <span className="text-slate-400 font-mono">Iron Corrosion Redox Model: 4 Fe + 3 O₂ + 6 H₂O → 4 Fe(OH)₃</span>
+          <span>{t.footerTitle}</span>
+          <span className="text-slate-400 font-mono">{t.footerEquation}</span>
         </div>
       </footer>
 
@@ -243,6 +284,7 @@ export default function App() {
       <ScientificTheoryModal
         isOpen={isTheoryOpen}
         onClose={() => setIsTheoryOpen(false)}
+        lang={lang}
       />
     </div>
   );

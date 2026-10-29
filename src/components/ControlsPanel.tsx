@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExperimentConfig, PHValue, OxygenPresence } from '../types';
 import { Play, RotateCcw, FlaskConical, Thermometer, Wind, Droplets, Sparkles, HelpCircle } from 'lucide-react';
+import { Language, translations } from '../utils/translations';
 
 interface ControlsPanelProps {
   config: ExperimentConfig;
@@ -8,6 +9,7 @@ interface ControlsPanelProps {
   onRunTrial: () => void;
   isRunning: boolean;
   onOpenTheory: () => void;
+  lang?: Language;
 }
 
 export const ControlsPanel: React.FC<ControlsPanelProps> = ({
@@ -16,7 +18,10 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
   onRunTrial,
   isRunning,
   onOpenTheory,
+  lang = 'en',
 }) => {
+  const t = translations[lang];
+
   return (
     <div
       id="controls-panel"
@@ -27,16 +32,16 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
         <div>
           <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
             <FlaskConical className="w-5 h-5 text-cyan-400" />
-            Independent Variables Setup
+            {t.controlsHeader}
           </h2>
         </div>
         <button
           id="btn-open-theory"
           onClick={onOpenTheory}
-          className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs"
+          className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
         >
           <HelpCircle className="w-3.5 h-3.5" />
-          Theory & Chemistry
+          {t.theoryBtn}
         </button>
       </div>
 
@@ -48,34 +53,34 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
               className="text-sm font-semibold text-slate-200 flex items-center gap-2"
             >
               <Thermometer className="w-4 h-4 text-rose-400" />
-              1. Temperature (°C)
+              {t.tempLabel}
             </label>
             <div className="flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/30 px-2.5 py-1 rounded-md">
               <span className="text-sm font-bold text-rose-400 font-mono">
                 {config.temperature}°C
               </span>
               <span className="text-[11px] text-rose-300/80 font-normal">
-                ({config.temperature <= 25 ? 'Room Temp' : config.temperature >= 45 ? 'High Temp' : 'Warm'})
+                ({config.temperature <= 25 ? t.roomTemp : config.temperature >= 45 ? t.highTemp : t.warmTemp})
               </span>
             </div>
           </div>
 
           {/* Temperature Buttons */}
           <div className="grid grid-cols-3 gap-3">
-            {[25, 35, 45].map((t) => (
+            {[25, 35, 45].map((tempVal) => (
               <button
-                key={t}
+                key={tempVal}
                 type="button"
-                id={`btn-temp-${t}`}
+                id={`btn-temp-${tempVal}`}
                 disabled={isRunning}
-                onClick={() => onChangeConfig({ temperature: t })}
+                onClick={() => onChangeConfig({ temperature: tempVal })}
                 className={`py-3 px-2.5 text-xs font-mono font-bold rounded-xl border transition-all flex items-center justify-center cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
-                  config.temperature === t
+                  config.temperature === tempVal
                     ? 'bg-rose-500/25 text-rose-200 border-rose-500/60 shadow-md shadow-rose-500/20 ring-2 ring-rose-500/40 scale-[1.02]'
                     : 'bg-slate-800/90 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-slate-100 hover:border-slate-600'
                 }`}
               >
-                <span className="text-base font-extrabold">{t}°C</span>
+                <span className="text-base font-extrabold">{tempVal}°C</span>
               </button>
             ))}
           </div>
@@ -89,7 +94,7 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
               className="text-sm font-semibold text-slate-200 flex items-center gap-2"
             >
               <Droplets className="w-4 h-4 text-sky-400" />
-              2. Solution pH
+              {t.phLabel}
             </label>
             <span
               className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${
@@ -100,92 +105,154 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
                   : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
               }`}
             >
+              pH {config.pH} (
               {config.pH === 3
-                ? 'Acidic (pH 3)'
+                ? t.phAcidic
                 : config.pH === 7
-                ? 'Neutral (pH 7)'
-                : 'Alkaline (pH 12)'}
+                ? t.phNeutral
+                : t.phAlkaline}
+              )
             </span>
           </div>
 
           <select
             id="ph-dropdown"
-            value={config.pH}
             disabled={isRunning}
-            onChange={(e) =>
-              onChangeConfig({ pH: Number(e.target.value) as PHValue })
-            }
-            className="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-100 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all cursor-pointer"
+            value={config.pH}
+            onChange={(e) => onChangeConfig({ pH: Number(e.target.value) as PHValue })}
+            className="w-full bg-slate-800 text-slate-100 text-sm font-medium border border-slate-700 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500/50 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <option value="3" className="bg-slate-900 text-slate-100">pH 3 (Acidic Solution - High [H⁺])</option>
-            <option value="7" className="bg-slate-900 text-slate-100">pH 7 (Neutral Distilled Water - [H⁺] = [OH⁻])</option>
-            <option value="12" className="bg-slate-900 text-slate-100">pH 12 (Alkaline / Basic Solution - High [OH⁻])</option>
+            <option value={3}>pH 3 — {t.phAcidic}</option>
+            <option value={7}>pH 7 — {t.phNeutral}</option>
+            <option value={12}>pH 12 — {t.phAlkaline}</option>
           </select>
+          <p className="text-[11px] text-slate-400 italic">
+            {config.pH === 3 && t.phAcidicDesc}
+            {config.pH === 7 && t.phNeutralDesc}
+            {config.pH === 12 && t.phAlkalineDesc}
+          </p>
         </div>
 
-        {/* 3. Variable: Presence of Oxygen Dropdown (Present or Not Present) */}
+        {/* 3. Variable: Dissolved Oxygen */}
         <div id="control-oxygen" className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="oxygen-dropdown"
-              className="text-sm font-semibold text-slate-200 flex items-center gap-2"
-            >
-              <Wind className="w-4 h-4 text-emerald-400" />
-              3. Presence of Oxygen (O₂)
-            </label>
-            <span
-              className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${
+          <label className="text-sm font-semibold text-slate-200 flex items-center gap-2">
+            <Wind className="w-4 h-4 text-cyan-400" />
+            {t.oxygenLabel}
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              id="btn-oxygen-present"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ oxygen: 'Present' })}
+              className={`p-3 rounded-xl border text-left transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
                 config.oxygen === 'Present'
-                  ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                  : 'bg-slate-800 text-slate-400 border-slate-700'
+                  ? 'bg-cyan-500/20 border-cyan-500 text-cyan-100 ring-2 ring-cyan-500/40'
+                  : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
               }`}
             >
-              {config.oxygen === 'Present' ? 'O₂ Present' : 'O₂ Absent / Sealed'}
-            </span>
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-semibold text-sm">{t.oxygenPresent}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                  O₂ + H₂O
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                {t.oxygenPresentDesc}
+              </p>
+            </button>
+
+            <button
+              type="button"
+              id="btn-oxygen-not-present"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ oxygen: 'Not Present' })}
+              className={`p-3 rounded-xl border text-left transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                config.oxygen === 'Not Present'
+                  ? 'bg-amber-500/20 border-amber-500 text-amber-100 ring-2 ring-amber-500/40'
+                  : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-semibold text-sm">{t.oxygenAbsent}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
+                  No O₂
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                {t.oxygenAbsentDesc}
+              </p>
+            </button>
           </div>
-
-          <select
-            id="oxygen-dropdown"
-            value={config.oxygen}
-            disabled={isRunning}
-            onChange={(e) =>
-              onChangeConfig({ oxygen: e.target.value as OxygenPresence })
-            }
-            className="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-100 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all cursor-pointer"
-          >
-            <option value="Present" className="bg-slate-900 text-slate-100">Present (Dissolved Atmospheric Oxygen)</option>
-            <option value="Not Present" className="bg-slate-900 text-slate-100">
-              Not Present (Boiled Deoxygenated Liquid + Mineral Oil Seal)
-            </option>
-          </select>
         </div>
-      </div>
 
-      {/* Run Trial Button */}
-      <div className="pt-2">
-        <button
-          id="btn-run-trial"
-          type="button"
-          disabled={isRunning}
-          onClick={onRunTrial}
-          className={`w-full py-3.5 px-6 rounded-xl font-bold text-slate-950 flex items-center justify-center gap-2.5 transition-all text-base ${
-            isRunning
-              ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
-              : 'bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-300 hover:to-cyan-400 shadow-lg shadow-cyan-500/20 active:scale-[0.99]'
-          }`}
-        >
-          {isRunning ? (
-            <>
-              <div className="w-5 h-5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
-              <span className="text-slate-300">Simulating Reaction (7 Days)...</span>
-            </>
-          ) : (
-            <>
-              <Play className="w-5 h-5 fill-slate-950" />
-              <span>Run Trial & Log Result</span>
-            </>
-          )}
-        </button>
+        {/* Action Button: Run Trial */}
+        <div className="pt-2">
+          <button
+            type="button"
+            id="btn-run-trial"
+            disabled={isRunning}
+            onClick={onRunTrial}
+            className={`w-full py-4 px-6 rounded-xl font-bold text-base flex items-center justify-center gap-2.5 transition-all shadow-lg cursor-pointer ${
+              isRunning
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-wait animate-pulse'
+                : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.01] active:scale-[0.99]'
+            }`}
+          >
+            {isRunning ? (
+              <>
+                <RotateCcw className="w-5 h-5 animate-spin" />
+                <span>{t.simulatingBtn}</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-5 h-5 fill-current" />
+                <span>{t.runTrialBtn}</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Quick Presets for Controlled Experiments */}
+        <div className="border-t border-slate-800 pt-3">
+          <div className="text-[11px] font-semibold text-slate-400 mb-2">
+            {t.quickSetupsLabel}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button
+              type="button"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ temperature: 25, pH: 7, oxygen: 'Present' })}
+              className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
+            >
+              {t.presetBaseline}
+            </button>
+            <button
+              type="button"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ temperature: 25, pH: 3, oxygen: 'Present' })}
+              className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
+            >
+              {t.presetAcidRain}
+            </button>
+            <button
+              type="button"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ temperature: 25, pH: 7, oxygen: 'Not Present' })}
+              className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
+            >
+              {t.presetBoiledWater}
+            </button>
+            <button
+              type="button"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ temperature: 45, pH: 3, oxygen: 'Present' })}
+              className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
+            >
+              {t.presetAccelerated}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
