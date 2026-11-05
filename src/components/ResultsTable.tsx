@@ -31,6 +31,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
       ? [
           '實驗次數',
           '溫度 (°C)',
+          '水 (H₂O)',
           '溶液酸鹼度 (pH)',
           '氧氣存在狀態',
           '銹蝕速率 (mg/day)',
@@ -42,6 +43,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
       : [
           'Trial Number',
           'Temperature (°C)',
+          'Water (H₂O)',
           'pH',
           'Oxygen Presence',
           'Rusting Rate (mg/day)',
@@ -52,7 +54,9 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
         ];
 
     const rows = trials.map((tr) => {
+      const waterText = isZh ? (tr.config.water === 'Present' ? '存在' : '不存在') : tr.config.water;
       const o2Text = isZh ? (tr.config.oxygen === 'Present' ? '存在' : '不存在') : tr.config.oxygen;
+      const phText = tr.config.water === 'Present' ? tr.config.pH : 'N/A';
       const obsText = isZh && tr.results.observationZh ? tr.results.observationZh : tr.results.observation;
       const sevText = isZh
         ? tr.results.severity === 'None'
@@ -69,7 +73,8 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
       return [
         tr.trialNumber,
         tr.config.temperature,
-        tr.config.pH,
+        waterText,
+        phText,
         o2Text,
         tr.results.rustRate,
         tr.results.totalRustMass,
@@ -185,6 +190,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
               <th className="py-3 px-3">{t.colTrial}</th>
               <th className="py-3 px-3">{t.colTime}</th>
               <th className="py-3 px-3">{t.colTemp}</th>
+              <th className="py-3 px-3">{t.colWater}</th>
               <th className="py-3 px-3">{t.colPh}</th>
               <th className="py-3 px-3">{t.colOxygen}</th>
               <th className="py-3 px-3">{t.colRate}</th>
@@ -196,7 +202,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
           <tbody className="divide-y divide-slate-800/80">
             {trials.length === 0 ? (
               <tr>
-                <td colSpan={10} className="py-10 text-center text-slate-500">
+                <td colSpan={11} className="py-10 text-center text-slate-500">
                   <p className="text-sm font-medium">{t.noTrialsYet}</p>
                 </td>
               </tr>
@@ -260,19 +266,36 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                       <span className="font-semibold text-rose-300">{trial.config.temperature}°C</span>
                     </td>
 
-                    {/* pH */}
+                    {/* Water */}
                     <td className="py-3 px-3">
                       <span
                         className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
-                          trial.config.pH === 3
-                            ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                            : trial.config.pH === 7
-                            ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
-                            : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+                          trial.config.water === 'Present'
+                            ? 'bg-blue-500/15 text-blue-300 border-blue-500/30'
+                            : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
                         }`}
                       >
-                        pH {trial.config.pH}
+                        {trial.config.water === 'Present' ? t.valWaterPresent : t.valWaterAbsent}
                       </span>
+                    </td>
+
+                    {/* pH */}
+                    <td className="py-3 px-3">
+                      {trial.config.water === 'Not Present' ? (
+                        <span className="text-slate-500 text-[11px] font-mono">—</span>
+                      ) : (
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                            trial.config.pH === 3
+                              ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                              : trial.config.pH === 7
+                              ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+                              : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+                          }`}
+                        >
+                          pH {trial.config.pH}
+                        </span>
+                      )}
                     </td>
 
                     {/* Oxygen */}

@@ -1,9 +1,11 @@
 export type Language = 'en' | 'zh';
+export type WaterPresence = 'Present' | 'Not Present';
 export type OxygenPresence = 'Present' | 'Not Present';
 export type PHValue = 3 | 7 | 12;
 
 export interface ExperimentConfig {
-  temperature: number; // 25 to 45 °C (25, 35, 45 °C)
+  temperature: number; // 25, 35, 45 °C
+  water: WaterPresence;
   pH: PHValue;
   oxygen: OxygenPresence;
 }
@@ -41,6 +43,6 @@ export interface InquiryQuestion {
   prompt: string;
   questionType?: QuestionType;
   options?: InquiryOption[];
-  variableFocus: 'all' | 'temperature' | 'pH' | 'oxygen';
+  variableFocus: 'all' | 'temperature' | 'pH' | 'oxygen' | 'water' | 'reactants';
   minEvidenceRows: number;
 }

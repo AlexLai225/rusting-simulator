@@ -1,7 +1,21 @@
 import { ExperimentConfig, DependentVariables, TrialResult, InquiryQuestion, Language } from '../types';
 
 export function calculateRustResults(config: ExperimentConfig): DependentVariables {
-  const { temperature, pH, oxygen } = config;
+  const { temperature, pH, oxygen, water } = config;
+
+  if (water === 'Not Present') {
+    return {
+      rustRate: 0.0,
+      totalRustMass: 0.0,
+      surfaceCoverage: 0,
+      timeToInitialRustHours: 0,
+      severity: 'None',
+      observation:
+        'No brown rust formed. The iron nail preserved its polished metallic luster. Water (moisture) is an essential condition for rusting; in dry air, iron cannot undergo electrochemical oxidation or hydration (e.g. anhydrous CaCl₂ test).',
+      observationZh:
+        '沒有形成棕色鐵銹。鐵釘保持其金屬光澤。水 (水分) 是鐵銹蝕的必要條件；在完全乾燥無水的空氣中 (例如使用無水氯化鈣 CaCl₂ 乾燥劑)，鐵無法進行電化學氧化與水合反應。',
+    };
+  }
 
   if (oxygen === 'Not Present') {
     return {
@@ -11,9 +25,9 @@ export function calculateRustResults(config: ExperimentConfig): DependentVariabl
       timeToInitialRustHours: 0,
       severity: 'None',
       observation:
-        'No brown rust formed. The iron nail preserved its polished metallic luster. Dissolved oxygen is an essential reactant for the electrochemical oxidation of iron.',
+        'No brown rust formed. The iron nail preserved its polished metallic luster. Dissolved oxygen is an essential reactant for the electrochemical oxidation of iron (e.g. boiled water with oil barrier test).',
       observationZh:
-        '沒有形成棕色鐵銹。鐵釘保持其金屬光澤。水中溶解氧是鐵發生電化學氧化的必要反應物。',
+        '沒有形成棕色鐵銹。鐵釘保持其金屬光澤。水中溶解氧是鐵發生電化學氧化的必要反應物 (例如煮沸去氧水加油層隔絕測試)。',
     };
   }
 
@@ -121,24 +135,24 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
           },
           {
             id: 'opt_1_2',
-            text: '較高溫度、欠缺氧氣及酸性條件',
+            text: '較高溫度、欠缺水分或欠缺氧氣',
             isCorrect: false,
             explanation:
-              '不正確。欠缺氧氣 (陰極還原反應的必要電子接收體) 時，即使在高溫或酸性溶液中，鐵亦無法發生銹蝕。',
+              '不正確。水和氧氣是銹蝕的兩個必要條件。若欠缺水分或欠缺氧氣，鐵的銹蝕速率均為 0.0 mg/day。',
           },
           {
             id: 'opt_1_3',
-            text: '較高溫度、存在氧氣及酸性條件',
+            text: '較高溫度、同時存在水與氧氣，以及酸性條件',
             isCorrect: true,
             explanation:
-              '正確！銹蝕是電化學氧化還原過程。高溫增加粒子碰撞頻率與能量，氧氣是必需的陰極反應物，而酸性條件 (H⁺) 能加快 Fe²⁺ 離子生成並阻止表面鈍化。',
+              '正確！銹蝕是電化學氧化還原過程。高溫增加粒子碰撞頻率與能量，水與氧氣是必需的反應條件，而酸性條件 (H⁺) 能加快 Fe²⁺ 離子生成並阻止表面鈍化。',
           },
           {
             id: 'opt_1_4',
             text: '較低溫度、欠缺氧氣及中性條件',
             isCorrect: false,
             explanation:
-              '不正確。在沒有氧氣的情況下，不論溫度與 pH 為何，鐵的銹蝕速率均為 0.0 mg/day。',
+              '不正確。在沒有氧氣或水分的情況下，不論溫度與 pH 為何，鐵的銹蝕速率均為 0.0 mg/day。',
           },
         ],
       },
@@ -178,7 +192,7 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
         title: '銹蝕的必要條件 (反應物)',
         prompt: '根據你的實驗數據，鐵發生銹蝕需要甚麼必要條件？簡略解釋為何需要這些條件。',
         minEvidenceRows: 2,
-        variableFocus: 'oxygen',
+        variableFocus: 'reactants',
         questionType: 'reactants-input',
       },
       {
@@ -234,24 +248,24 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
         },
         {
           id: 'opt_1_2',
-          text: 'Higher temperature, absence of oxygen, and acidic condition',
+          text: 'Higher temperature, absence of water or absence of oxygen',
           isCorrect: false,
           explanation:
-            'Incorrect. Without oxygen (the necessary cathodic electron acceptor), iron cannot undergo rusting even at higher temperatures or in acidic solutions.',
+            'Incorrect. Both water and oxygen are essential conditions. If either water or oxygen is absent, iron cannot rust (0.0 mg/day).',
         },
         {
           id: 'opt_1_3',
-          text: 'Higher temperature, presence of oxygen, and acidic condition',
+          text: 'Higher temperature, presence of both water and oxygen, and acidic condition',
           isCorrect: true,
           explanation:
-            'Correct! Rusting is an electrochemical oxidation reaction. Higher temperature increases kinetic collision rates, oxygen is the mandatory cathodic electron acceptor, and acidic condition accelerates redox electron transfer by preventing protective oxide passivation.',
+            'Correct! Rusting is an electrochemical oxidation reaction. Higher temperature increases kinetic collision rates, both water and oxygen are mandatory reactants, and acidic condition accelerates redox reaction by preventing protective passivation.',
         },
         {
           id: 'opt_1_4',
           text: 'Lower temperature, absence of oxygen, and neutral condition',
           isCorrect: false,
           explanation:
-            'Incorrect. When oxygen is absent, the rate of rusting is 0.0 mg/day regardless of pH and temperature.',
+            'Incorrect. When oxygen or water is absent, the rate of rusting is 0.0 mg/day regardless of pH and temperature.',
         },
       ],
     },
@@ -291,7 +305,7 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
       title: 'Requirement of Reactants',
       prompt: 'Based on your trials, what are the essential conditions required for rusting? Explain briefly why they are needed.',
       minEvidenceRows: 2,
-      variableFocus: 'oxygen',
+      variableFocus: 'reactants',
       questionType: 'reactants-input',
     },
     {
@@ -548,16 +562,19 @@ export function validateEvidence(
   }
 
   const comparisonDetails: string[] = selectedTrials.map((t) => {
+    const wText = isZh
+      ? t.config.water === 'Present' ? '有水' : '無水'
+      : t.config.water === 'Present' ? 'H₂O' : 'No H₂O';
     const o2Text = isZh
-      ? t.config.oxygen === 'Present' ? '存在' : '不存在'
-      : t.config.oxygen;
+      ? t.config.oxygen === 'Present' ? '有氧' : '無氧'
+      : t.config.oxygen === 'Present' ? 'O₂' : 'No O₂';
     const sevText = isZh
       ? t.results.severity === 'None' ? '無銹蝕' : t.results.severity === 'Minimal' ? '輕微' : t.results.severity === 'Moderate' ? '中度' : t.results.severity === 'Heavy' ? '嚴重' : '極嚴重'
       : t.results.severity;
 
     return isZh
-      ? `實驗 #${t.trialNumber}：[溫度: ${t.config.temperature}°C, pH: ${t.config.pH}, 氧氣: ${o2Text}] → 銹蝕速率: ${t.results.rustRate} mg/day (${sevText})`
-      : `Trial #${t.trialNumber}: [Temp: ${t.config.temperature}°C, pH: ${t.config.pH}, O₂: ${o2Text}] → Rust Rate: ${t.results.rustRate} mg/day (${sevText})`;
+      ? `實驗 #${t.trialNumber}：[溫度: ${t.config.temperature}°C, 水: ${wText}, pH: ${t.config.water === 'Present' ? t.config.pH : '—'}, 氧氣: ${o2Text}] → 銹蝕速率: ${t.results.rustRate} mg/day (${sevText})`
+      : `Trial #${t.trialNumber}: [Temp: ${t.config.temperature}°C, Water: ${wText}, pH: ${t.config.water === 'Present' ? t.config.pH : 'N/A'}, O₂: ${o2Text}] → Rust Rate: ${t.results.rustRate} mg/day (${sevText})`;
   });
 
   // Check if student selected an option (for multiple-choice or claim-based questions)
@@ -581,25 +598,25 @@ export function validateEvidence(
       return {
         isValid: false,
         message: isZh
-          ? `證據不充分：所選實驗的銹蝕速率完全相同 (${minRate} mg/day)。為證明哪些條件加速銹蝕，請選取具對比性的實驗 (例如 45°C / pH 3 / 存在氧氣 vs 室溫 / 中性 / 無氧)。`
-          : `Evidence Incomplete: All selected trials produced the exact same rust rate (${minRate} mg/day). To prove which conditions accelerate rusting, select contrasting trials (e.g. 45°C / pH 3 / O₂ Present vs. room temp / neutral / no O₂).`,
+          ? `證據不充分：所選實驗的銹蝕速率完全相同 (${minRate} mg/day)。為證明哪些條件加速銹蝕，請選取具對比性的實驗 (例如 45°C / pH 3 / 存在水與氧氣 vs 室溫 / 中性 / 無氧或無水)。`
+          : `Evidence Incomplete: All selected trials produced the exact same rust rate (${minRate} mg/day). To prove which conditions accelerate rusting, select contrasting trials (e.g. 45°C / pH 3 / Water & O₂ Present vs. room temp / neutral / no O₂ or dry).`,
         comparisonDetails,
       };
     }
 
     const hasAccelerated = selectedTrials.some(
-      (t) => t.config.oxygen === 'Present' && (t.config.temperature >= 40 || t.config.pH === 3)
+      (t) => t.config.water === 'Present' && t.config.oxygen === 'Present' && (t.config.temperature >= 40 || t.config.pH === 3)
     );
     const hasBaselineOrSlow = selectedTrials.some(
-      (t) => t.config.oxygen === 'Not Present' || t.config.pH === 12 || (t.config.temperature <= 30 && t.config.pH === 7)
+      (t) => t.config.water === 'Not Present' || t.config.oxygen === 'Not Present' || t.config.pH === 12 || (t.config.temperature <= 30 && t.config.pH === 7)
     );
 
     if (!hasAccelerated || !hasBaselineOrSlow) {
       return {
         isValid: false,
         message: isZh
-          ? '證據不充分：為證明高溫 (45°C)、氧氣存在與酸性 (pH 3) 加快銹蝕，請至少選取一個具備上述加速條件的實驗，並與基準或較慢的實驗進行對照。'
-          : 'Evidence Incomplete: To demonstrate that high temperature (45°C), oxygen presence, and acidic pH (pH 3) accelerate rusting, please select at least one trial with these accelerating conditions and compare it against a baseline or slower trial.',
+          ? '證據不充分：為證明高溫 (45°C)、存在水與氧氣及酸性 (pH 3) 加快銹蝕，請至少選取一個具備上述加速條件的實驗，並與基準或較慢的實驗進行對照。'
+          : 'Evidence Incomplete: To demonstrate that high temperature (45°C), presence of water & oxygen, and acidic pH (pH 3) accelerate rusting, please select at least one trial with these accelerating conditions and compare it against a baseline or slower trial.',
         comparisonDetails,
       };
     }
@@ -607,82 +624,69 @@ export function validateEvidence(
     return {
       isValid: true,
       message: isZh
-        ? '支持證據有效：數據清楚表明高溫、溶解氧與酸性 pH 顯著提高了銹蝕速率。'
-        : 'Valid supporting evidence: Demonstrates that higher temperature, dissolved oxygen, and acidic pH significantly increase the rate of rusting compared to baseline or inhibited conditions.',
+        ? '支持證據有效：數據清楚表明高溫、存在水與溶解氧，以及酸性 pH 顯著提高了銹蝕速率。'
+        : 'Valid supporting evidence: Demonstrates that higher temperature, water, dissolved oxygen, and acidic pH significantly increase the rate of rusting compared to baseline or inhibited conditions.',
       comparisonDetails,
     };
   }
 
-  // Question 2: Oxygen Requirement ('oxygen')
-  if (question.variableFocus === 'oxygen') {
-    const hasPresent = selectedTrials.some((t) => t.config.oxygen === 'Present');
-    const hasAbsent = selectedTrials.some((t) => t.config.oxygen === 'Not Present');
+  // Question 2: Reactants / Essential Conditions (Water & Oxygen)
+  if (question.variableFocus === 'reactants' || question.variableFocus === 'oxygen' || question.variableFocus === 'water') {
+    const hasBothPresent = selectedTrials.some((t) => t.config.water === 'Present' && t.config.oxygen === 'Present');
+    const hasWaterAbsent = selectedTrials.some((t) => t.config.water === 'Not Present');
+    const hasOxygenAbsent = selectedTrials.some((t) => t.config.oxygen === 'Not Present');
 
-    if (!hasPresent) {
+    if (!hasBothPresent) {
       return {
         isValid: false,
         message: isZh
-          ? '證據不充分：所選實驗均為「無氧氣」(速率為 0.0 mg/day)。為證明氧氣是銹蝕必需的，必須同時選取至少一個「存在氧氣」的實驗。'
-          : 'Evidence Incomplete: All your selected trials have Oxygen "Not Present" (rate: 0.0 mg/day). To prove that oxygen is required for rusting, you must also select at least one trial with Oxygen "Present" to demonstrate active corrosion.',
+          ? '證據不充分：所選實驗均缺少水分或缺少氧氣 (銹蝕速率均為 0.0 mg/day)。為證明水和氧氣是銹蝕的必要條件，必須選取至少一個「同時存在水與氧氣」且有銹蝕發生的實驗作為對照。'
+          : 'Evidence Incomplete: All your selected trials lack either water or oxygen (rate: 0.0 mg/day). To prove that both are essential, you must select at least one trial where BOTH water and oxygen are Present to demonstrate active corrosion.',
         comparisonDetails,
       };
     }
 
-    if (!hasAbsent) {
+    if (!hasWaterAbsent && !hasOxygenAbsent) {
       return {
         isValid: false,
         message: isZh
-          ? '證據不充分：所選實驗均「存在氧氣」。為證明氧氣是不可或缺的反應物，請至少選取一個「無氧氣」的對照組 (顯示 0.0 mg/day)。'
-          : 'Evidence Incomplete: All your selected trials have Oxygen "Present". To prove that oxygen is an indispensable reactant, you must select at least one trial with Oxygen "Not Present" showing 0.0 mg/day.',
+          ? '證據不充分：所選實驗均同時存在水與氧氣。為證明水與氧氣各自為不可或缺的必要條件，請選取至少一個「無水 (乾燥空氣)」或「無氧 (去氧水)」的對照實驗 (顯示 0.0 mg/day)。'
+          : 'Evidence Incomplete: All selected trials have both water and oxygen. To prove that both are indispensable, please select at least one control trial lacking water (dry air) or lacking oxygen showing 0.0 mg/day.',
         comparisonDetails,
       };
     }
-
-    const controlledPair = selectedTrials.some((t1) =>
-      selectedTrials.some(
-        (t2) =>
-          t1.id !== t2.id &&
-          t1.config.temperature === t2.config.temperature &&
-          t1.config.pH === t2.config.pH &&
-          t1.config.oxygen !== t2.config.oxygen
-      )
-    );
 
     return {
       isValid: true,
       message: isZh
-        ? controlledPair
-          ? '極佳的對照實驗證據：在相同溫度和 pH 下，有氧與無氧的對比直接確立了氧氣是銹蝕的必需反應物。'
-          : '支持證據有效：數據表明無氧時完全停止銹蝕 (0.0 mg/day)，而有氧時發生銹蝕。'
-        : controlledPair
-        ? 'Excellent controlled evidence: Comparing identical temperature and pH with and without dissolved oxygen directly isolates O₂ as the mandatory reactant.'
-        : 'Valid supporting evidence: Demonstrates that absence of oxygen stops rusting (0.0 mg/day) while oxygen presence permits corrosion.',
+        ? '極佳的對照實驗證據：數據清楚證明缺少水 (0.0 mg/day) 或缺少氧氣 (0.0 mg/day) 均無法發生銹蝕，只有在水與氧氣同時存在時鐵才會銹蝕，證實兩者皆為必要條件！'
+        : 'Excellent controlled evidence: Demonstrates that lack of water (0.0 mg/day) or lack of oxygen (0.0 mg/day) completely prevents corrosion, confirming that BOTH water and oxygen are essential conditions for rusting!',
       comparisonDetails,
     };
   }
 
   // Question 3: Effect of pH ('pH')
   if (question.variableFocus === 'pH') {
-    const o2PresentTrials = selectedTrials.filter((t) => t.config.oxygen === 'Present');
+    const activeCorrosionTrials = selectedTrials.filter((t) => t.config.oxygen === 'Present' && t.config.water === 'Present');
 
-    if (o2PresentTrials.length < 2) {
+    if (activeCorrosionTrials.length < 2) {
       return {
         isValid: false,
         message: isZh
-          ? '證據無效：無氧條件下任何 pH 均不生銹 (皆為 0.0 mg/day)。為探究 pH 的影響，請選取「存在氧氣」的實驗。'
-          : 'Invalid Evidence: When oxygen is absent, iron cannot rust at any pH (0.0 mg/day for all). To investigate the effect of pH, you must select trials where Oxygen is "Present".',
+          ? '證據無效：無氧或乾燥無水條件下任何 pH 均不生銹 (皆為 0.0 mg/day)。為探究 pH 的影響，請選取「存在水且存在氧氣」的實驗。'
+          : 'Invalid Evidence: When oxygen or water is absent, iron cannot rust at any pH (0.0 mg/day for all). To investigate the effect of pH, you must select trials where BOTH Water and Oxygen are "Present".',
         comparisonDetails,
       };
     }
 
-    const uniquePHs = new Set(o2PresentTrials.map((t) => t.config.pH));
+    const uniquePHs = new Set(activeCorrosionTrials.map((t) => t.config.pH));
     if (uniquePHs.size < 2) {
       const singlePH = Array.from(uniquePHs)[0];
       return {
         isValid: false,
         message: isZh
-          ? `證據不充分：所選實驗均使用相同 pH (${singlePH})。為探究 pH 效應，請選取對比不同 pH (例如 pH 3 vs pH 7 vs pH 12) 且均有氧的實驗。`
-          : `Evidence Incomplete: All selected trials use the same pH (${singlePH}). To prove the effect of pH, select trials comparing different pH values (e.g. pH 3 vs pH 7 vs pH 12) with Oxygen Present.`,
+          ? `證據不充分：所選實驗均使用相同 pH (${singlePH})。為探究 pH 效應，請選取對比不同 pH (例如 pH 3 vs pH 7 vs pH 12) 且均有水有氧的實驗。`
+          : `Evidence Incomplete: All selected trials use the same pH (${singlePH}). To prove the effect of pH, select trials comparing different pH values (e.g. pH 3 vs pH 7 vs pH 12) with Water & Oxygen Present.`,
         comparisonDetails,
       };
     }
@@ -690,27 +694,27 @@ export function validateEvidence(
     return {
       isValid: true,
       message: isZh
-        ? '有效的對照證據：在有氧條件下對照不同 pH 值，證明酸性 pH 3 加快銹蝕，而鹼性 pH 12 鈍化抑制銹蝕。'
-        : 'Valid controlled evidence: Comparing different pH values with oxygen present shows that acidic pH 3 accelerates corrosion and alkaline pH 12 inhibits it.',
+        ? '有效的對照證據：在有水有氧條件下對照不同 pH 值，證明酸性 pH 3 加快銹蝕，而鹼性 pH 12 鈍化抑制銹蝕。'
+        : 'Valid controlled evidence: Comparing different pH values with water and oxygen present shows that acidic pH 3 accelerates corrosion and alkaline pH 12 inhibits it.',
       comparisonDetails,
     };
   }
 
   // Question 4: Effect of Temperature ('temperature')
   if (question.variableFocus === 'temperature') {
-    const o2PresentTrials = selectedTrials.filter((t) => t.config.oxygen === 'Present');
+    const activeCorrosionTrials = selectedTrials.filter((t) => t.config.oxygen === 'Present' && t.config.water === 'Present');
 
-    if (o2PresentTrials.length < 2) {
+    if (activeCorrosionTrials.length < 2) {
       return {
         isValid: false,
         message: isZh
-          ? '證據無效：無氧時任何溫度下均不生銹 (0.0 mg/day)。為觀察溫度效應，請選取「存在氧氣」的實驗。'
-          : 'Invalid Evidence: Without oxygen, iron cannot rust at any temperature (0.0 mg/day). To observe temperature effects, select trials where Oxygen is "Present".',
+          ? '證據無效：無氧或無水時任何溫度下均不生銹 (0.0 mg/day)。為觀察溫度效應，請選取「存在水且存在氧氣」的實驗。'
+          : 'Invalid Evidence: Without oxygen or water, iron cannot rust at any temperature (0.0 mg/day). To observe temperature effects, select trials where Water and Oxygen are "Present".',
         comparisonDetails,
       };
     }
 
-    const temps = o2PresentTrials.map((t) => t.config.temperature);
+    const temps = activeCorrosionTrials.map((t) => t.config.temperature);
     const minTemp = Math.min(...temps);
     const maxTemp = Math.max(...temps);
 

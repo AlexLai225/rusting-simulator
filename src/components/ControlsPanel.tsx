@@ -86,38 +86,97 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
           </div>
         </div>
 
-        {/* 2. Variable: pH Dropdown (3, 7, 12) */}
-        <div id="control-ph" className="space-y-2">
+        {/* 2. Variable: Water Presence (H₂O) */}
+        <div id="control-water" className="space-y-2">
+          <label className="text-sm font-semibold text-slate-200 flex items-center gap-2">
+            <Droplets className="w-4 h-4 text-blue-400" />
+            {t.waterLabel}
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              id="btn-water-present"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ water: 'Present' })}
+              className={`p-3 rounded-xl border text-left transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                config.water === 'Present'
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-100 ring-2 ring-blue-500/40'
+                  : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-semibold text-sm">{t.waterPresent}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono">
+                  H₂O
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                {t.waterPresentDesc}
+              </p>
+            </button>
+
+            <button
+              type="button"
+              id="btn-water-not-present"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ water: 'Not Present' })}
+              className={`p-3 rounded-xl border text-left transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                config.water === 'Not Present'
+                  ? 'bg-amber-500/20 border-amber-500 text-amber-100 ring-2 ring-amber-500/40'
+                  : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-semibold text-sm">{t.waterAbsent}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
+                  CaCl₂
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                {t.waterAbsentDesc}
+              </p>
+            </button>
+          </div>
+        </div>
+
+        {/* 3. Variable: pH Dropdown (3, 7, 12) */}
+        <div id="control-ph" className={`space-y-2 transition-opacity ${config.water === 'Not Present' ? 'opacity-65' : ''}`}>
           <div className="flex items-center justify-between">
             <label
               htmlFor="ph-dropdown"
               className="text-sm font-semibold text-slate-200 flex items-center gap-2"
             >
-              <Droplets className="w-4 h-4 text-sky-400" />
+              <FlaskConical className="w-4 h-4 text-sky-400" />
               {t.phLabel}
             </label>
-            <span
-              className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${
-                config.pH === 3
-                  ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+            {config.water === 'Not Present' ? (
+              <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                {t.phNotApplicable}
+              </span>
+            ) : (
+              <span
+                className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${
+                  config.pH === 3
+                    ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                    : config.pH === 7
+                    ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+                    : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+                }`}
+              >
+                pH {config.pH} (
+                {config.pH === 3
+                  ? t.phAcidic
                   : config.pH === 7
-                  ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
-                  : 'bg-purple-500/15 text-purple-300 border-purple-500/30'
-              }`}
-            >
-              pH {config.pH} (
-              {config.pH === 3
-                ? t.phAcidic
-                : config.pH === 7
-                ? t.phNeutral
-                : t.phAlkaline}
-              )
-            </span>
+                  ? t.phNeutral
+                  : t.phAlkaline}
+                )
+              </span>
+            )}
           </div>
 
           <select
             id="ph-dropdown"
-            disabled={isRunning}
+            disabled={isRunning || config.water === 'Not Present'}
             value={config.pH}
             onChange={(e) => onChangeConfig({ pH: Number(e.target.value) as PHValue })}
             className="w-full bg-slate-800 text-slate-100 text-sm font-medium border border-slate-700 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500/50 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
@@ -127,13 +186,17 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
             <option value={12}>pH 12 — {t.phAlkaline}</option>
           </select>
           <p className="text-[11px] text-slate-400 italic">
-            {config.pH === 3 && t.phAcidicDesc}
-            {config.pH === 7 && t.phNeutralDesc}
-            {config.pH === 12 && t.phAlkalineDesc}
+            {config.water === 'Not Present'
+              ? t.phNotApplicable
+              : config.pH === 3
+              ? t.phAcidicDesc
+              : config.pH === 7
+              ? t.phNeutralDesc
+              : t.phAlkalineDesc}
           </p>
         </div>
 
-        {/* 3. Variable: Dissolved Oxygen */}
+        {/* 4. Variable: Dissolved Oxygen */}
         <div id="control-oxygen" className="space-y-2">
           <label className="text-sm font-semibold text-slate-200 flex items-center gap-2">
             <Wind className="w-4 h-4 text-cyan-400" />
@@ -154,7 +217,7 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
               <div className="flex items-center justify-between mb-1">
                 <span className="font-semibold text-sm">{t.oxygenPresent}</span>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono">
-                  O₂ + H₂O
+                  O₂
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 leading-tight">
@@ -218,11 +281,11 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
           <div className="text-[11px] font-semibold text-slate-400 mb-2">
             {t.quickSetupsLabel}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             <button
               type="button"
               disabled={isRunning}
-              onClick={() => onChangeConfig({ temperature: 25, pH: 7, oxygen: 'Present' })}
+              onClick={() => onChangeConfig({ temperature: 25, water: 'Present', pH: 7, oxygen: 'Present' })}
               className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
             >
               {t.presetBaseline}
@@ -230,15 +293,15 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
             <button
               type="button"
               disabled={isRunning}
-              onClick={() => onChangeConfig({ temperature: 25, pH: 3, oxygen: 'Present' })}
+              onClick={() => onChangeConfig({ temperature: 25, water: 'Not Present', pH: 7, oxygen: 'Present' })}
               className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
             >
-              {t.presetAcidRain}
+              {t.presetDryAir}
             </button>
             <button
               type="button"
               disabled={isRunning}
-              onClick={() => onChangeConfig({ temperature: 25, pH: 7, oxygen: 'Not Present' })}
+              onClick={() => onChangeConfig({ temperature: 25, water: 'Present', pH: 7, oxygen: 'Not Present' })}
               className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
             >
               {t.presetBoiledWater}
@@ -246,7 +309,15 @@ export const ControlsPanel: React.FC<ControlsPanelProps> = ({
             <button
               type="button"
               disabled={isRunning}
-              onClick={() => onChangeConfig({ temperature: 45, pH: 3, oxygen: 'Present' })}
+              onClick={() => onChangeConfig({ temperature: 25, water: 'Present', pH: 3, oxygen: 'Present' })}
+              className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
+            >
+              {t.presetAcidRain}
+            </button>
+            <button
+              type="button"
+              disabled={isRunning}
+              onClick={() => onChangeConfig({ temperature: 45, water: 'Present', pH: 3, oxygen: 'Present' })}
               className="text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-rose-300 border border-slate-700 transition-colors disabled:opacity-50 text-left cursor-pointer"
             >
               {t.presetAccelerated}

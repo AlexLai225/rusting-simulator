@@ -18,7 +18,7 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
   simulationDay,
   lang = 'en',
 }) => {
-  const { temperature, pH, oxygen } = config;
+  const { temperature, pH, oxygen, water } = config;
   const t = translations[lang];
   const isZh = lang === 'zh';
 
@@ -213,30 +213,10 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
             <text x="145" y="218" fill="#94a3b8" fontSize="8" fontFamily="monospace">100ml</text>
           </g>
 
-          {/* 3. Aqueous Solution Fill */}
-          <g id="aqueous-solution">
-            <path
-              d="M 124 135 L 124 270 Q 124 280 134 280 L 266 280 Q 276 280 276 270 L 276 135 Z"
-              fill={liquidColor}
-              className="transition-colors duration-700"
-            />
-            {/* Meniscus surface line */}
-            <ellipse
-              cx="200"
-              cy="135"
-              rx="76"
-              ry="5"
-              fill={liquidBorder}
-              fillOpacity="0.4"
-              stroke={liquidBorder}
-              strokeWidth="1.5"
-            />
-          </g>
-
-          {/* 4. Oxygen Environment Setup */}
-          {oxygen === 'Not Present' ? (
-            /* Boiled + Sealed de-aerated water with oil barrier */
-            <g id="deoxygenated-barrier">
+          {/* 3. Water & Aqueous Environment Setup */}
+          {water === 'Not Present' ? (
+            /* DRY AIR CHAMBER WITH ANHYDROUS CaCl2 */
+            <g id="dry-desiccant-chamber">
               {/* Rubber stopper seal */}
               <polygon
                 points="115,70 285,70 270,95 130,95"
@@ -254,39 +234,115 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
                 fontWeight="bold"
                 fontFamily="sans-serif"
               >
-                {isZh ? '密閉氣密膠塞' : 'AIRTIGHT SEAL'}
+                {isZh ? '密閉乾燥反應室' : 'SEALED DRY CHAMBER'}
               </text>
 
-              {/* Floating mineral oil barrier */}
-              <rect
-                x="122"
-                y="124"
-                width="156"
-                height="12"
-                fill="#eab308"
-                opacity="0.8"
-              />
-              <text
-                x="200"
-                y="133"
-                textAnchor="middle"
-                fill="#713f12"
-                fontSize="8"
-                fontWeight="bold"
-                fontFamily="sans-serif"
-              >
-                {isZh ? '礦物油隔絕層 (阻隔空氣與氧氣)' : 'Mineral Oil Barrier (No O₂)'}
-              </text>
+              {/* Anhydrous Calcium Chloride (CaCl2) Bed at bottom */}
+              <g id="cacl2-bed">
+                {/* Cotton wool cushion */}
+                <ellipse cx="200" cy="272" rx="68" ry="7" fill="#e2e8f0" opacity="0.3" />
+                {/* Granules of anhydrous CaCl2 */}
+                <circle cx="145" cy="273" r="3.5" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="158" cy="271" r="3" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="170" cy="274" r="4" fill="#ffffff" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="184" cy="272" r="3.5" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="198" cy="274" r="4.5" fill="#ffffff" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="212" cy="271" r="3.5" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="226" cy="273" r="4" fill="#ffffff" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="240" cy="272" r="3.5" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="0.5" />
+                <circle cx="253" cy="274" r="3" fill="#ffffff" stroke="#cbd5e1" strokeWidth="0.5" />
+
+                {/* Desiccant label */}
+                <rect x="130" y="248" width="140" height="15" rx="4" fill="#090d16" fillOpacity="0.8" />
+                <text
+                  x="200"
+                  y="259"
+                  textAnchor="middle"
+                  fill="#94a3b8"
+                  fontSize="7.5"
+                  fontWeight="bold"
+                  fontFamily="sans-serif"
+                >
+                  {isZh ? '無水氯化鈣乾燥劑 (吸除水氣)' : 'Anhydrous CaCl₂ (Dry Air Desiccant)'}
+                </text>
+              </g>
             </g>
           ) : (
-            /* Bubbles in liquid */
-            <g id="aerated-bubbles-liquid">
-              <circle cx="160" cy="210" r="3.5" fill="#bae6fd" opacity="0.75" />
-              <circle cx="155" cy="180" r="2.5" fill="#bae6fd" opacity="0.6" />
-              <circle cx="240" cy="230" r="3" fill="#bae6fd" opacity="0.7" />
-              <circle cx="245" cy="195" r="4" fill="#bae6fd" opacity="0.65" />
-              <circle cx="180" cy="250" r="2" fill="#bae6fd" opacity="0.7" />
-              <circle cx="215" cy="160" r="3" fill="#bae6fd" opacity="0.8" />
+            /* AQUEOUS SOLUTION FILL */
+            <g id="aqueous-solution">
+              <path
+                d="M 124 135 L 124 270 Q 124 280 134 280 L 266 280 Q 276 280 276 270 L 276 135 Z"
+                fill={liquidColor}
+                className="transition-colors duration-700"
+              />
+              {/* Meniscus surface line */}
+              <ellipse
+                cx="200"
+                cy="135"
+                rx="76"
+                ry="5"
+                fill={liquidBorder}
+                fillOpacity="0.4"
+                stroke={liquidBorder}
+                strokeWidth="1.5"
+              />
+
+              {/* 4. Oxygen Environment Setup inside Water */}
+              {oxygen === 'Not Present' ? (
+                /* Boiled + Sealed de-aerated water with oil barrier */
+                <g id="deoxygenated-barrier">
+                  {/* Rubber stopper seal */}
+                  <polygon
+                    points="115,70 285,70 270,95 130,95"
+                    fill="#1e293b"
+                    stroke="#0f172a"
+                    strokeWidth="2"
+                  />
+                  <rect x="180" y="55" width="40" height="15" rx="3" fill="#334155" />
+                  <text
+                    x="200"
+                    y="85"
+                    textAnchor="middle"
+                    fill="#cbd5e1"
+                    fontSize="9"
+                    fontWeight="bold"
+                    fontFamily="sans-serif"
+                  >
+                    {isZh ? '密閉氣密膠塞' : 'AIRTIGHT SEAL'}
+                  </text>
+
+                  {/* Floating mineral oil barrier */}
+                  <rect
+                    x="122"
+                    y="124"
+                    width="156"
+                    height="12"
+                    fill="#eab308"
+                    opacity="0.8"
+                  />
+                  <text
+                    x="200"
+                    y="133"
+                    textAnchor="middle"
+                    fill="#713f12"
+                    fontSize="8"
+                    fontWeight="bold"
+                    fontFamily="sans-serif"
+                  >
+                    {isZh ? '礦物油隔絕層 (阻隔空氣與氧氣)' : 'Mineral Oil Barrier (No O₂)'}
+                  </text>
+                </g>
+              ) : (
+                /* Bubbles in liquid */
+                <g id="aerated-bubbles-liquid">
+                  <circle cx="160" cy="210" r="3.5" fill="#bae6fd" opacity="0.75" />
+                  <circle cx="155" cy="180" r="2.5" fill="#bae6fd" opacity="0.6" />
+                  <circle cx="240" cy="230" r="3" fill="#bae6fd" opacity="0.7" />
+                  <circle cx="245" cy="195" r="4" fill="#bae6fd" opacity="0.65" />
+                  <circle cx="180" cy="250" r="2" fill="#bae6fd" opacity="0.7" />
+                  <circle cx="215" cy="160" r="3" fill="#bae6fd" opacity="0.8" />
+                </g>
+              )}
             </g>
           )}
 
@@ -399,8 +455,34 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
             </text>
           </g>
 
-          {/* 9. Foreground Oxygen Label */}
-          {oxygen === 'Present' && (
+          {/* 9. Foreground Status Badge */}
+          {water === 'Not Present' ? (
+            <g id="dry-condition-badge">
+              <rect
+                x="85"
+                y="12"
+                width="230"
+                height="20"
+                rx="10"
+                fill="#090d16"
+                fillOpacity="0.94"
+                stroke="#d97706"
+                strokeWidth="1.2"
+                strokeOpacity="0.8"
+              />
+              <text
+                x="200"
+                y="25.5"
+                textAnchor="middle"
+                fill="#fbbf24"
+                fontSize="9"
+                fontFamily="sans-serif"
+                fontWeight="700"
+              >
+                🌵 {t.waterAbsentBadge}
+              </text>
+            </g>
+          ) : oxygen === 'Present' ? (
             <g id="aerated-bubbles">
               <rect
                 x="95"
@@ -424,6 +506,32 @@ export const ApparatusVisualizer: React.FC<ApparatusVisualizerProps> = ({
                 fontWeight="700"
               >
                 ☁ {t.oxygenPresentBadge}
+              </text>
+            </g>
+          ) : (
+            <g id="deoxygenated-badge">
+              <rect
+                x="95"
+                y="12"
+                width="210"
+                height="20"
+                rx="10"
+                fill="#090d16"
+                fillOpacity="0.94"
+                stroke="#64748b"
+                strokeWidth="1.2"
+                strokeOpacity="0.8"
+              />
+              <text
+                x="200"
+                y="25.5"
+                textAnchor="middle"
+                fill="#94a3b8"
+                fontSize="9"
+                fontFamily="sans-serif"
+                fontWeight="700"
+              >
+                🛡 {t.oxygenFreeBadge}
               </text>
             </g>
           )}

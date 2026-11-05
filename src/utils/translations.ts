@@ -25,7 +25,13 @@ export interface TranslationDictionary {
   roomTemp: string;
   warmTemp: string;
   highTemp: string;
+  waterLabel: string;
+  waterPresent: string;
+  waterAbsent: string;
+  waterPresentDesc: string;
+  waterAbsentDesc: string;
   phLabel: string;
+  phNotApplicable: string;
   phAcidic: string;
   phNeutral: string;
   phAlkaline: string;
@@ -41,6 +47,7 @@ export interface TranslationDictionary {
   simulatingBtn: string;
   quickSetupsLabel: string;
   presetBaseline: string;
+  presetDryAir: string;
   presetAcidRain: string;
   presetBoiledWater: string;
   presetAccelerated: string;
@@ -57,6 +64,9 @@ export interface TranslationDictionary {
   boiledSolution: string;
   oxygenPresentBadge: string;
   oxygenFreeBadge: string;
+  waterPresentBadge: string;
+  waterAbsentBadge: string;
+  calciumChlorideDryingAgent: string;
   submergedNail: string;
   nailDay: (day: number) => string;
   cleanNail: string;
@@ -95,6 +105,7 @@ export interface TranslationDictionary {
   colTrial: string;
   colTime: string;
   colTemp: string;
+  colWater: string;
   colPh: string;
   colOxygen: string;
   colRate: string;
@@ -103,6 +114,8 @@ export interface TranslationDictionary {
   colState: string;
   valPresent: string;
   valAbsent: string;
+  valWaterPresent: string;
+  valWaterAbsent: string;
   selectedBadge: string;
   selectAsEvidence: string;
   noTrialsYet: string;
@@ -139,14 +152,14 @@ export interface TranslationDictionary {
 export const translations: Record<Language, TranslationDictionary> = {
   en: {
     appTitle: 'Rusting Rate Investigation Lab',
-    appSubtitle: 'Electrochemical redox modeling • Independent variables: Temp, pH, O₂',
+    appSubtitle: 'Electrochemical redox modeling • Independent variables: Temp, Water, pH, O₂',
     versionBadge: 'v2.4 SIMULATION',
     scientificGuide: 'Scientific Guide',
     switchLangText: '繁體中文',
 
     overviewTitle: 'How do environmental variables influence the rate of iron rusting?',
     independentVarsLabel: 'Independent Variables:',
-    independentVarsDesc: 'Temperature (25°C - 45°C), Solution pH (3, 7, 12), Presence of Oxygen (Present / Not Present).',
+    independentVarsDesc: 'Temperature (25°C - 45°C), Water (Present / Not Present), Solution pH (3, 7, 12), Presence of Oxygen (Present / Not Present).',
     dependentVarLabel: 'Designed Dependent Variable:',
     dependentVarDesc: 'Rate of Rusting (mg/day) & Total Rust Mass Formed (mg).',
     loggedTrials: 'Logged Trials',
@@ -158,22 +171,29 @@ export const translations: Record<Language, TranslationDictionary> = {
     roomTemp: 'Room Temp',
     warmTemp: 'Warm',
     highTemp: 'High Temp',
-    phLabel: '2. Solution pH',
+    waterLabel: '2. Presence of Water (H₂O)',
+    waterPresent: 'Water Present (Aqueous)',
+    waterAbsent: 'No Water (Dry Air / CaCl₂)',
+    waterPresentDesc: 'Water provides the necessary reaction medium and reactant for electrochemical hydration of iron.',
+    waterAbsentDesc: 'Desiccated with anhydrous calcium chloride (CaCl₂). In the absence of water, iron cannot rust.',
+    phLabel: '3. Solution pH (Aqueous)',
+    phNotApplicable: 'N/A (Dry Environment - No Aqueous Ions)',
     phAcidic: 'Strongly Acidic (pH 3)',
     phNeutral: 'Neutral Water (pH 7)',
     phAlkaline: 'Alkaline (pH 12)',
     phAcidicDesc: 'High H⁺ ion concentration accelerates iron oxidation (Fe + 2H⁺ ➔ Fe²⁺ + H₂). Prevents oxide passivation.',
     phNeutralDesc: 'Standard aqueous baseline. Normal atmospheric corrosion rate with dissolved oxygen.',
     phAlkalineDesc: 'Passivating alkaline environment. Promotes insoluble Fe(OH)₂ layer, strongly suppressing rust.',
-    oxygenLabel: '3. Presence of Dissolved Oxygen (O₂)',
+    oxygenLabel: '4. Presence of Oxygen (O₂)',
     oxygenPresent: 'Aerated (O₂ Present)',
     oxygenAbsent: 'Boiled & Deoxygenated (No O₂)',
-    oxygenPresentDesc: 'Dissolved O₂ is continuously replenished via bubbling air sparger. Essential cathodic reactant (O₂ + 2H₂O + 4e⁻ ➔ 4OH⁻).',
+    oxygenPresentDesc: 'Oxygen is available as the essential cathodic electron acceptor (O₂ + 2H₂O + 4e⁻ ➔ 4OH⁻).',
     oxygenAbsentDesc: 'Water boiled to expel dissolved gases and sealed with an oil barrier. Lack of electron acceptor prevents rusting.',
     runTrialBtn: 'Run 7-Day Trial',
     simulatingBtn: 'Simulating Experiment...',
     quickSetupsLabel: 'Quick Setups:',
-    presetBaseline: 'Baseline (25°C, pH 7, O₂)',
+    presetBaseline: 'Baseline (25°C, H₂O, O₂)',
+    presetDryAir: 'Dry Air (No Water)',
     presetAcidRain: 'Acid Rain (pH 3)',
     presetBoiledWater: 'Boiled Water (No O₂)',
     presetAccelerated: 'Accelerated (45°C, pH 3)',
@@ -189,6 +209,9 @@ export const translations: Record<Language, TranslationDictionary> = {
     boiledSolution: 'Boiled Deoxygenated Solution (Oil Barrier)',
     oxygenPresentBadge: 'Dissolved Oxygen (O₂) Present',
     oxygenFreeBadge: 'Oxygen-Free (De-aerated)',
+    waterPresentBadge: 'Water (H₂O) Present',
+    waterAbsentBadge: 'Dry Chamber (Anhydrous CaCl₂)',
+    calciumChlorideDryingAgent: 'Anhydrous CaCl₂ Desiccant',
     submergedNail: 'Submerged Iron Nail',
     nailDay: (day: number) => `Iron Nail (Day ${day})`,
     cleanNail: 'Clean Fe Metal',
@@ -225,6 +248,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     colTrial: 'Trial #',
     colTime: 'Timestamp',
     colTemp: 'Temperature',
+    colWater: 'Water (H₂O)',
     colPh: 'Solution pH',
     colOxygen: 'Oxygen (O₂)',
     colRate: 'Rust Rate',
@@ -233,6 +257,8 @@ export const translations: Record<Language, TranslationDictionary> = {
     colState: 'Observed State',
     valPresent: 'Present',
     valAbsent: 'Not Present',
+    valWaterPresent: 'Present',
+    valWaterAbsent: 'Not Present',
     selectedBadge: 'Selected',
     selectAsEvidence: 'Select as Evidence',
     noTrialsYet: 'No experimental trials logged yet. Configure independent variables above and click "Run 7-Day Trial" to begin collecting scientific data.',
@@ -264,14 +290,14 @@ export const translations: Record<Language, TranslationDictionary> = {
   },
   zh: {
     appTitle: '鐵銹蝕速率探究實驗室',
-    appSubtitle: '電化學氧化還原模型 • 自變量：溫度、酸鹼度 (pH)、氧氣 (O₂)',
+    appSubtitle: '電化學氧化還原模型 • 自變量：溫度、水 (H₂O)、酸鹼度 (pH)、氧氣 (O₂)',
     versionBadge: 'v2.4 實驗模擬',
     scientificGuide: '科學指南',
     switchLangText: 'English',
 
     overviewTitle: '環境因素如何影響鐵的銹蝕速率？',
     independentVarsLabel: '自變量 (獨立變量)：',
-    independentVarsDesc: '溫度 (25°C - 45°C)、溶液酸鹼度 pH (3, 7, 12)、氧氣存在 (存在 / 不存在)。',
+    independentVarsDesc: '溫度 (25°C - 45°C)、水 (存在 / 不存在)、溶液酸鹼度 pH (3, 7, 12)、氧氣 (存在 / 不存在)。',
     dependentVarLabel: '設計應變量 (因變量)：',
     dependentVarDesc: '銹蝕速率 (毫克/天) 及 生成鐵銹總質量 (毫克)。',
     loggedTrials: '已記錄實驗',
@@ -283,22 +309,29 @@ export const translations: Record<Language, TranslationDictionary> = {
     roomTemp: '室溫',
     warmTemp: '溫熱',
     highTemp: '高溫',
-    phLabel: '2. 溶液酸鹼度 (pH)',
+    waterLabel: '2. 水的存在狀態 (H₂O)',
+    waterPresent: '存在水 (水溶液)',
+    waterAbsent: '無水 (乾燥空氣 / 無水 CaCl₂)',
+    waterPresentDesc: '水為鐵的電化學水合反應及離子移動提供必需的反應物與液體介質。',
+    waterAbsentDesc: '裝置內置無水氯化鈣 (CaCl₂) 乾燥劑以吸盡水分。欠缺水分時，鐵完全不會銹蝕。',
+    phLabel: '3. 溶液酸鹼度 (pH) [有水時]',
+    phNotApplicable: '不適用 (乾燥環境無水溶液與離子)',
     phAcidic: '強酸性 (pH 3)',
     phNeutral: '中性水 (pH 7)',
     phAlkaline: '鹼性 (pH 12)',
     phAcidicDesc: '高濃度 H⁺ 離子促進鐵的氧化 (Fe + 2H⁺ ➔ Fe²⁺ + H₂)，並阻止保護性氧化膜形成。',
     phNeutralDesc: '標準水溶液基準條件。在溶有氧氣的情況下呈現標準常態銹蝕速率。',
     phAlkalineDesc: '鹼性鈍化環境。表面迅速生成不溶性氫氧化物保護層，強烈抑制進一步銹蝕。',
-    oxygenLabel: '3. 水中溶解氧 (O₂)',
+    oxygenLabel: '4. 氧氣的存在狀態 (O₂)',
     oxygenPresent: '充氣 (存在氧氣)',
     oxygenAbsent: '煮沸脫氧 (無氧)',
-    oxygenPresentDesc: '透過充氣導管持續補充溶解氧氣。為陰極還原反應的必要反應物 (O₂ + 2H₂O + 4e⁻ ➔ 4OH⁻)。',
+    oxygenPresentDesc: '透過空氣/氧氣供應陰極還原反應的必要反應物 (O₂ + 2H₂O + 4e⁻ ➔ 4OH⁻)。',
     oxygenAbsentDesc: '蒸餾水預先煮沸驅除溶解氣體，並以油層隔絕空氣。欠缺電子接收體，無法發生銹蝕。',
     runTrialBtn: '進行 7 天實驗',
     simulatingBtn: '實驗模擬進行中...',
     quickSetupsLabel: '快速預設條件：',
-    presetBaseline: '基準條件 (25°C, pH 7, 存在氧)',
+    presetBaseline: '基準條件 (25°C, 有水, 有氧)',
+    presetDryAir: '乾燥空氣 (無水)',
     presetAcidRain: '模擬酸雨環境 (pH 3)',
     presetBoiledWater: '煮沸去氧水 (無氧)',
     presetAccelerated: '加速銹蝕 (45°C, pH 3)',
@@ -314,6 +347,9 @@ export const translations: Record<Language, TranslationDictionary> = {
     boiledSolution: '煮沸脫氧溶液 (隔絕油層)',
     oxygenPresentBadge: '水中溶有氧氣 (O₂)',
     oxygenFreeBadge: '無氧 (已脫氣)',
+    waterPresentBadge: '存在水分 (H₂O)',
+    waterAbsentBadge: '乾燥無水 (無水氯化鈣 CaCl₂)',
+    calciumChlorideDryingAgent: '無水氯化鈣乾燥劑 (CaCl₂)',
     submergedNail: '浸泡鐵釘',
     nailDay: (day: number) => `鐵釘 (第 ${day} 天)`,
     cleanNail: '潔淨鐵金屬',
@@ -350,6 +386,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     colTrial: '實驗 #',
     colTime: '記錄時間',
     colTemp: '溫度',
+    colWater: '水 (H₂O)',
     colPh: '溶液 pH',
     colOxygen: '氧氣 (O₂)',
     colRate: '銹蝕速率',
@@ -358,6 +395,8 @@ export const translations: Record<Language, TranslationDictionary> = {
     colState: '觀察狀態',
     valPresent: '存在',
     valAbsent: '不存在',
+    valWaterPresent: '存在',
+    valWaterAbsent: '不存在',
     selectedBadge: '已選取',
     selectAsEvidence: '選取為佐證',
     noTrialsYet: '尚未記錄任何實驗數據。請在上方設定自變量並點擊「進行 7 天實驗」開始收集科學數據。',

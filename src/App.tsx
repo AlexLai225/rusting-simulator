@@ -25,13 +25,14 @@ export default function App() {
   // State for experimental configuration (Independent variables)
   const [config, setConfig] = useState<ExperimentConfig>({
     temperature: 25,
+    water: 'Present',
     pH: 7,
     oxygen: 'Present',
   });
 
   // Current visual result on apparatus
   const [currentResult, setCurrentResult] = useState<DependentVariables | null>(() =>
-    calculateRustResults({ temperature: 25, pH: 7, oxygen: 'Present' })
+    calculateRustResults({ temperature: 25, water: 'Present', pH: 7, oxygen: 'Present' })
   );
 
   // List of recorded trials (previous rows remain visible)
