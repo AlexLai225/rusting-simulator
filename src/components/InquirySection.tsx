@@ -6,8 +6,8 @@ import {
   EvidenceValidation,
   evaluateReactantsAnswer,
   ReactantsEvaluation,
-  evaluateCollisionTheory,
-  CollisionTheoryEvaluation,
+  evaluateTemperatureAnswer,
+  TemperatureExplanationEvaluation,
 } from '../utils/rustModel';
 import {
   CheckCircle2,
@@ -19,7 +19,7 @@ import {
   ChevronRight,
   BookOpen,
   Atom,
-  Flame,
+  Thermometer,
 } from 'lucide-react';
 import { translations } from '../utils/translations';
 
@@ -40,6 +40,7 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
   const [selectedOptionId, setSelectedOptionId] = useState<string>('');
   const [reactantsConditions, setReactantsConditions] = useState<string>('');
   const [reactantsExplanation, setReactantsExplanation] = useState<string>('');
+  const [temperatureExplanation, setTemperatureExplanation] = useState<string>('');
   const [collisionTheoryExplanation, setCollisionTheoryExplanation] = useState<string>('');
 
   const [submissionResult, setSubmissionResult] = useState<{
@@ -50,7 +51,7 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
     explanation: string;
     validation: EvidenceValidation;
     reactantsEvaluation?: ReactantsEvaluation;
-    collisionEvaluation?: CollisionTheoryEvaluation;
+    temperatureEvaluation?: TemperatureExplanationEvaluation;
   } | null>(null);
 
   const [overrideUnlock, setOverrideUnlock] = useState(false);
@@ -121,30 +122,31 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
       return;
     }
 
-    // Q4: Temperature with Collision Theory Explanation
-    if (question.questionType === 'claim-with-collision-theory') {
-      if (!selectedOptionId || !collisionTheoryExplanation.trim()) return;
+    // Q4: Temperature Explanation (No collision theory)
+    if (question.questionType === 'temperature-explanation' || question.questionType === 'claim-with-collision-theory') {
+      const explText = (temperatureExplanation || collisionTheoryExplanation).trim();
+      if (!selectedOptionId || !explText) return;
 
       const chosenOption = question.options?.find((opt) => opt.id === selectedOptionId);
       const chosenClaimCorrect = chosenOption ? chosenOption.isCorrect : false;
-      const collisionEval = evaluateCollisionTheory(collisionTheoryExplanation, lang);
+      const tempEval = evaluateTemperatureAnswer(explText, lang);
       const validation = validateEvidence(question, selectedTrials, selectedOptionId, lang);
 
-      const claimIsCorrect = chosenClaimCorrect && collisionEval.isValid;
+      const claimIsCorrect = chosenClaimCorrect && tempEval.isValid;
       const evidenceIsValid = validation.isValid;
       const isOverallCorrect = claimIsCorrect && evidenceIsValid;
 
       let explanation = '';
       if (!chosenClaimCorrect) {
         explanation = chosenOption?.explanation || (isZh ? '所選結論不正確。' : 'The chosen temperature claim is inaccurate.');
-      } else if (!collisionEval.isValid) {
-        explanation = collisionEval.feedback;
+      } else if (!tempEval.isValid) {
+        explanation = tempEval.feedback;
       } else if (!evidenceIsValid) {
         explanation = isZh
-          ? '你的結論與碰撞理論論述非常準確！但科學探究需要從上方「實驗結果記錄表」中選取合適的實驗數據作為支持證據 (佐證)。'
-          : 'Your claim and collision theory explanation are scientifically accurate! However, scientific method requires your claim to be substantiated with proper experimental trial rows selected from the Results Table.';
+          ? '你的結論與解釋非常準確！但科學探究需要從上方「實驗結果記錄表」中選取合適的實驗數據作為支持證據 (佐證)。'
+          : 'Your claim and explanation are scientifically accurate! However, scientific method requires your claim to be substantiated with proper experimental trial rows selected from the Results Table.';
       } else {
-        explanation = collisionEval.feedback;
+        explanation = tempEval.feedback;
         triggerConfetti();
       }
 
@@ -155,7 +157,7 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
         evidenceIsValid,
         explanation,
         validation,
-        collisionEvaluation: collisionEval,
+        temperatureEvaluation: tempEval,
       });
       return;
     }
@@ -338,11 +340,6 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
                     ? '2. 簡略解釋為何這些條件對鐵的銹蝕反應是不可或缺的：'
                     : '2. Explain briefly why these conditions are essential for the rusting reaction:'}
                 </label>
-                <p className="text-[11px] text-slate-400 mb-2">
-                  {isZh
-                    ? '提示：解釋它們作為電化學氧化還原反應物 (化學反應物) 的角色。'
-                    : 'Hint: Explain their role as chemical reactants in the redox reaction of rusting.'}
-                </p>
                 <textarea
                   id="textarea-reactants-explanation"
                   rows={3}
@@ -353,8 +350,8 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
                   }}
                   placeholder={
                     isZh
-                      ? '請簡略解釋：為何兩者皆不可或缺？(例如說明氧氣和水是將金屬鐵氧化成鐵銹所必需的化學反應物...)'
-                      : 'Explain briefly: why are both conditions necessary? (e.g., explaining that oxygen and water act as the chemical reactants needed to oxidize iron...)'
+                      ? '請簡略解釋為何兩者皆為不可或缺...'
+                      : 'Briefly explain why both conditions are essential...'
                   }
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all leading-relaxed"
                 />
@@ -362,8 +359,8 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
             </div>
           )}
 
-          {/* QUESTION TYPE 2: Temperature Claim + Collision Theory Section */}
-          {question.questionType === 'claim-with-collision-theory' && (
+          {/* QUESTION TYPE 2: Temperature Explanation Section (No Collision Theory) */}
+          {(question.questionType === 'temperature-explanation' || question.questionType === 'claim-with-collision-theory') && (
             <div className="space-y-4">
               <div className="space-y-2.5">
                 <label className="text-xs font-bold text-slate-300 uppercase tracking-wide">
@@ -400,40 +397,27 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
                 </div>
               </div>
 
-              {/* Collision Theory Explanation Section */}
+              {/* Temperature Explanation Section */}
               <div className="space-y-2 bg-slate-950/60 p-4 sm:p-5 rounded-xl border border-slate-800">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-slate-200 uppercase tracking-wide flex items-center gap-1.5">
-                    <Flame className="w-4 h-4 text-rose-400" />
-                    {isZh ? '運用碰撞理論解釋你的結論：' : 'Explain your claim in terms of Collision Theory:'}
+                    <Thermometer className="w-4 h-4 text-amber-400" />
+                    {isZh ? '簡略解釋你的結論：' : 'Briefly explain your conclusion:'}
                   </label>
-                  <span className="text-[11px] text-rose-300/80 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20 font-semibold">
-                    {isZh ? '動力學碰撞理論' : 'Kinetic Theory'}
-                  </span>
                 </div>
-                <p className="text-xs text-slate-400">
-                  {isZh ? (
-                    <>
-                      論述中請包含：<strong>粒子動能</strong> (粒子運動速率)、<strong>碰撞頻率</strong> (單位時間內碰撞次數)、以及<strong>有效碰撞</strong> (具備大於或等於活化能的碰撞比例)。
-                    </>
-                  ) : (
-                    <>
-                      In your explanation, refer to: <strong>particle kinetic energy</strong> (speed of particles), <strong>collision frequency</strong> (how often particles collide), and <strong>effective collisions</strong> (proportion of collisions with energy ≥ activation energy).
-                    </>
-                  )}
-                </p>
                 <textarea
-                  id="textarea-collision-theory"
+                  id="textarea-temperature-explanation"
                   rows={3}
-                  value={collisionTheoryExplanation}
+                  value={temperatureExplanation || collisionTheoryExplanation}
                   onChange={(e) => {
+                    setTemperatureExplanation(e.target.value);
                     setCollisionTheoryExplanation(e.target.value);
                     if (submissionResult?.submitted) setSubmissionResult(null);
                   }}
                   placeholder={
                     isZh
-                      ? '請解釋溫度升高如何根據碰撞理論影響反應物粒子 (平均動能、碰撞頻率、以及達到活化能的有效碰撞)...'
-                      : 'Explain how higher temperature affects reactant particles according to Collision Theory (kinetic energy, collision frequency, and effective collisions exceeding activation energy)...'
+                      ? '請輸入原理解釋...'
+                      : 'Briefly explain your conclusion...'
                   }
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all leading-relaxed"
                 />
@@ -683,8 +667,8 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
                       </div>
                     )}
 
-                    {/* Claim Details for Q4 Collision Theory */}
-                    {question.questionType === 'claim-with-collision-theory' && (
+                    {/* Claim Details for Q4 Temperature Explanation */}
+                    {(question.questionType === 'temperature-explanation' || question.questionType === 'claim-with-collision-theory') && (
                       <div className="space-y-1.5 text-slate-200">
                         <div className="flex items-start gap-2">
                           <strong className="text-cyan-400 shrink-0">{isZh ? '主張：' : 'Claim:'}</strong>
@@ -693,40 +677,40 @@ export const InquirySection: React.FC<InquirySectionProps> = ({
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
-                          <strong className="text-cyan-400 shrink-0">{isZh ? '碰撞理論解釋：' : 'Collision Theory Explanation:'}</strong>
-                          <span className="italic text-slate-300">{collisionTheoryExplanation}</span>
+                          <strong className="text-cyan-400 shrink-0">{isZh ? '原理解釋：' : 'Explanation:'}</strong>
+                          <span className="italic text-slate-300">{temperatureExplanation || collisionTheoryExplanation}</span>
                         </div>
-                        {submissionResult.collisionEvaluation && (
+                        {submissionResult.temperatureEvaluation && (
                           <div className="flex flex-wrap items-center gap-1.5 pt-1 text-[10px]">
                             <span className="font-semibold text-slate-400">
-                              {isZh ? '動力學要點：' : 'Kinetic Criteria:'}
+                              {isZh ? '關鍵要點：' : 'Key Criteria:'}
                             </span>
                             <span
                               className={`px-2 py-0.5 rounded border ${
-                                submissionResult.collisionEvaluation.mentionsKineticEnergy
+                                submissionResult.temperatureEvaluation.mentionsTemperatureIncrease
                                   ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
                                   : 'bg-slate-800 text-slate-400 border-slate-700'
                               }`}
                             >
-                              {submissionResult.collisionEvaluation.mentionsKineticEnergy ? '✓' : '○'} {isZh ? '粒子平均動能' : 'Particle Kinetic Energy'}
+                              {submissionResult.temperatureEvaluation.mentionsTemperatureIncrease ? '✓' : '○'} {isZh ? '溫度升高' : 'Temperature Increases'}
                             </span>
                             <span
                               className={`px-2 py-0.5 rounded border ${
-                                submissionResult.collisionEvaluation.mentionsCollisionFrequency
+                                submissionResult.temperatureEvaluation.mentionsMassIncrease
                                   ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
                                   : 'bg-slate-800 text-slate-400 border-slate-700'
                               }`}
                             >
-                              {submissionResult.collisionEvaluation.mentionsCollisionFrequency ? '✓' : '○'} {isZh ? '碰撞頻率' : 'Collision Frequency'}
+                              {submissionResult.temperatureEvaluation.mentionsMassIncrease ? '✓' : '○'} {isZh ? '質量增加較大' : 'Mass Increase is Greater'}
                             </span>
                             <span
                               className={`px-2 py-0.5 rounded border ${
-                                submissionResult.collisionEvaluation.mentionsEffectiveCollisions
+                                submissionResult.temperatureEvaluation.mentionsMoreSeriousRusting
                                   ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
                                   : 'bg-slate-800 text-slate-400 border-slate-700'
                               }`}
                             >
-                              {submissionResult.collisionEvaluation.mentionsEffectiveCollisions ? '✓' : '○'} {isZh ? '有效碰撞 (≥ Ea)' : 'Effective Collisions (≥ Ea)'}
+                              {submissionResult.temperatureEvaluation.mentionsMoreSeriousRusting ? '✓' : '○'} {isZh ? '銹蝕變得更加嚴重' : 'Rusting Becomes More Serious'}
                             </span>
                           </div>
                         )}

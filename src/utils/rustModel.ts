@@ -159,8 +159,8 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
       {
         id: 'q2_ph',
         title: '溶液酸鹼度 (pH) 的影響',
-        prompt: '在有氧氣存在的情況下，溶液酸鹼度 (pH) 如何影響鐵的銹蝕速率？',
-        minEvidenceRows: 2,
+        prompt: '在有水及氧氣存在的情況下，溶液酸鹼度 (pH) 如何影響鐵的銹蝕速率？',
+        minEvidenceRows: 3,
         variableFocus: 'pH',
         questionType: 'multiple-choice',
         options: [
@@ -183,7 +183,7 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
             text: '酸性條件顯著加快銹蝕，而鹼性條件因鈍化保護作用而強烈抑制銹蝕。',
             isCorrect: true,
             explanation:
-              '正確！對照相同溫度與含氧條件的實驗可知：pH 3 酸性環境銹蝕速率最高，而 pH 12 鹼性環境產生保護性鈍化膜，使銹蝕速率接近零。',
+              '正確！對照相同溫度下 pH 3、pH 7 與 pH 12 的實驗可知：酸性環境 (pH 3) 銹蝕速率最高，而鹼性環境 (pH 12) 產生保護性鈍化膜，使銹蝕速率接近零。',
           },
         ],
       },
@@ -191,38 +191,38 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
         id: 'q3_reactants',
         title: '銹蝕的必要條件 (反應物)',
         prompt: '根據你的實驗數據，鐵發生銹蝕需要甚麼必要條件？簡略解釋為何需要這些條件。',
-        minEvidenceRows: 2,
+        minEvidenceRows: 3,
         variableFocus: 'reactants',
         questionType: 'reactants-input',
       },
       {
         id: 'q4_temp',
-        title: '溫度效應與碰撞理論',
-        prompt: '在氧氣存在且 pH 保持不變的情況下，提高溫度會有甚麼影響？',
+        title: '溫度的影響',
+        prompt: '在水和氧氣存在且 pH 保持不變的情況下，提高溫度會有甚麼影響？',
         minEvidenceRows: 2,
         variableFocus: 'temperature',
-        questionType: 'claim-with-collision-theory',
+        questionType: 'temperature-explanation',
         options: [
           {
             id: 'opt_t_1',
-            text: '提高溫度會顯著增加鐵的銹蝕速率。',
+            text: '當溫度升高時，質量增加較大，因為銹蝕變得更加嚴重。',
             isCorrect: true,
             explanation:
-              '正確！提高溫度會顯著加速鐵的銹蝕速率。',
+              '正確！當溫度升高時，質量增加較大，因為銹蝕變得更加嚴重。',
           },
           {
             id: 'opt_t_2',
-            text: '提高溫度會顯著減慢鐵的銹蝕速率。',
+            text: '當溫度升高時，質量增加較小，因為高溫抑制銹蝕。',
             isCorrect: false,
             explanation:
-              '不正確。熱能使反應物粒子運動加快，增加反應速率，而非減慢。',
+              '不正確。溫度升高會加快化學反應速率，加劇銹蝕，而非減少質量增加。',
           },
           {
             id: 'opt_t_3',
-            text: '溫度對鐵的銹蝕速率沒有明顯影響。',
+            text: '溫度對鐵的銹蝕嚴重程度和質量增加沒有影響。',
             isCorrect: false,
             explanation:
-              '不正確。化學反應的速率極度依賴反應溫度。',
+              '不正確。化學反應的銹蝕程度與生成物質量極度依賴反應溫度。',
           },
         ],
       },
@@ -272,8 +272,8 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
     {
       id: 'q2_ph',
       title: 'Effect of Solution pH',
-      prompt: 'How does solution pH influence the corrosion rate of iron when oxygen is present?',
-      minEvidenceRows: 2,
+      prompt: 'When water and oxygen are present, how does solution pH influence the corrosion rate of iron?',
+      minEvidenceRows: 3,
       variableFocus: 'pH',
       questionType: 'multiple-choice',
       options: [
@@ -296,7 +296,7 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
           text: 'Acidic conditions accelerate rusting, while alkaline conditions strongly inhibit it through passivation.',
           isCorrect: true,
           explanation:
-            'Correct! Comparing trials with identical temperature and oxygen, acidic condition yields the highest rust rate, whereas alkaline condition produces near-zero rust due to protective hydroxide passivation.',
+            'Correct! Comparing trials at the same temperature with pH 3, pH 7, and pH 12 shows that acidic condition yields the highest rust rate, whereas alkaline condition produces near-zero rust due to protective hydroxide passivation.',
         },
       ],
     },
@@ -304,38 +304,38 @@ export function getInquiryQuestions(lang: Language = 'en'): InquiryQuestion[] {
       id: 'q3_reactants',
       title: 'Requirement of Reactants',
       prompt: 'Based on your trials, what are the essential conditions required for rusting? Explain briefly why they are needed.',
-      minEvidenceRows: 2,
+      minEvidenceRows: 3,
       variableFocus: 'reactants',
       questionType: 'reactants-input',
     },
     {
       id: 'q4_temp',
-      title: 'Effect of Temperature & Collision Theory',
-      prompt: 'When oxygen is present and pH is constant, what is the effect of increasing temperature?',
+      title: 'Effect of Temperature',
+      prompt: 'When water and oxygen are present and pH is constant, what is the effect of increasing temperature?',
       minEvidenceRows: 2,
       variableFocus: 'temperature',
-      questionType: 'claim-with-collision-theory',
+      questionType: 'temperature-explanation',
       options: [
         {
           id: 'opt_t_1',
-          text: 'Higher temperature significantly increases the rate of rusting.',
+          text: 'When the temperature increases, the mass increase is greater as the rusting becomes more serious.',
           isCorrect: true,
           explanation:
-            'Correct! Increasing temperature accelerates the rate of rusting.',
+            'Correct! When the temperature increases, the mass increase is greater as the rusting becomes more serious.',
         },
         {
           id: 'opt_t_2',
-          text: 'Higher temperature significantly decreases the rate of rusting.',
+          text: 'When the temperature increases, the mass increase is smaller because high temperature inhibits rusting.',
           isCorrect: false,
           explanation:
-            'Incorrect. Thermal energy accelerates chemical reactions; it does not decrease their rate.',
+            'Incorrect. Higher temperature accelerates chemical reaction rates; it does not decrease rust formation.',
         },
         {
           id: 'opt_t_3',
-          text: 'Temperature has no observable effect on the rate of rusting.',
+          text: 'Temperature has no observable effect on the severity of rusting or mass increase.',
           isCorrect: false,
           explanation:
-            'Incorrect. Chemical reaction rates strongly depend on temperature.',
+            'Incorrect. Chemical reaction severity and rust mass strongly depend on temperature.',
         },
       ],
     },
@@ -462,56 +462,58 @@ export function evaluateReactantsAnswer(
   };
 }
 
-export interface CollisionTheoryEvaluation {
-  mentionsKineticEnergy: boolean;
-  mentionsCollisionFrequency: boolean;
-  mentionsEffectiveCollisions: boolean;
+export interface TemperatureExplanationEvaluation {
+  mentionsTemperatureIncrease: boolean;
+  mentionsMassIncrease: boolean;
+  mentionsRustingSerious: boolean;
   isValid: boolean;
   feedback: string;
 }
 
-export function evaluateCollisionTheory(explanation: string, lang: Language = 'en'): CollisionTheoryEvaluation {
+export function evaluateTemperatureAnswer(
+  explanation: string,
+  lang: Language = 'en'
+): TemperatureExplanationEvaluation {
   const norm = explanation.toLowerCase();
 
-  const mentionsKineticEnergy =
-    norm.includes('kinetic') ||
-    norm.includes('thermal energy') ||
-    norm.includes('energy') ||
-    norm.includes('speed') ||
-    norm.includes('faster') ||
-    norm.includes('velocity') ||
-    norm.includes('動能') ||
-    norm.includes('能量') ||
-    norm.includes('運動') ||
-    norm.includes('速度');
+  const mentionsTemperatureIncrease =
+    norm.includes('temp') ||
+    norm.includes('heat') ||
+    norm.includes('warm') ||
+    norm.includes('hot') ||
+    norm.includes('溫') ||
+    norm.includes('升') ||
+    norm.includes('熱');
 
-  const mentionsCollisionFrequency =
-    norm.includes('frequen') ||
-    norm.includes('collide more') ||
-    norm.includes('more collision') ||
-    norm.includes('rate of collision') ||
-    norm.includes('often') ||
-    norm.includes('number of collision') ||
-    norm.includes('碰撞') ||
-    norm.includes('頻率') ||
-    norm.includes('次數');
+  const mentionsMassIncrease =
+    norm.includes('mass') ||
+    norm.includes('weight') ||
+    norm.includes('rate') ||
+    norm.includes('greater') ||
+    norm.includes('increase') ||
+    norm.includes('more') ||
+    norm.includes('higher') ||
+    norm.includes('質') ||
+    norm.includes('重') ||
+    norm.includes('增') ||
+    norm.includes('大');
 
-  const mentionsEffectiveCollisions =
-    norm.includes('effective') ||
-    norm.includes('activation energy') ||
-    norm.includes('successful') ||
-    norm.includes('exceed') ||
-    norm.includes('greater than ea') ||
-    norm.includes('ea') ||
-    norm.includes('活化能') ||
-    norm.includes('有效碰撞') ||
-    norm.includes('大於');
+  const mentionsRustingSerious =
+    norm.includes('serious') ||
+    norm.includes('severe') ||
+    norm.includes('rust') ||
+    norm.includes('corros') ||
+    norm.includes('嚴') ||
+    norm.includes('銹') ||
+    norm.includes('锈') ||
+    norm.includes('蝕') ||
+    norm.includes('腐');
 
-  const hasLength = norm.trim().length >= 8;
+  const hasLength = norm.trim().length >= 5;
   const countKeyPoints =
-    (mentionsKineticEnergy ? 1 : 0) +
-    (mentionsCollisionFrequency ? 1 : 0) +
-    (mentionsEffectiveCollisions ? 1 : 0);
+    (mentionsTemperatureIncrease ? 1 : 0) +
+    (mentionsMassIncrease ? 1 : 0) +
+    (mentionsRustingSerious ? 1 : 0);
 
   const isValid = hasLength && countKeyPoints >= 2;
 
@@ -519,29 +521,33 @@ export function evaluateCollisionTheory(explanation: string, lang: Language = 'e
   if (lang === 'zh') {
     if (isValid) {
       feedback =
-        '運用碰撞理論解釋得非常準確！你清楚指出了升高溫度會賦予反應物粒子更大的平均動能，增加碰撞頻率，並使具備大於或等於活化能 (Ea) 的有效碰撞比例顯著提升。';
+        '論述非常出色！你正確指出了當溫度升高時，生成鐵銹的質量增加較大，因為鐵的銹蝕變得更加嚴重。';
     } else {
       feedback =
-        '為加強你的碰撞理論論述，請包含以下要點：(1) 溫度升高使反應物粒子擁有更大的平均動能，運動速度加快；(2) 粒子互相碰撞的頻率增加；(3) 擁有足夠能量 (≥ 活化能) 發生化學反應的有效碰撞比例大幅增加。';
+        '請完善你的解釋：當溫度升高時，生成鐵銹的質量增加較大，因為鐵的銹蝕變得更加嚴重。';
     }
   } else {
     if (isValid) {
       feedback =
-        'Superb explanation using Collision Theory! You clearly connected temperature with particle kinetic energy, increased collision frequency, and a higher proportion of effective collisions possessing energy greater than or equal to the activation energy (Ea).';
+        'Excellent scientific explanation! You correctly identified that when the temperature increases, the mass increase is greater as the rusting becomes more serious.';
     } else {
       feedback =
-        'To strengthen your Collision Theory explanation, make sure to explain: (1) Higher temperature gives reactant particles greater average kinetic energy, so they move faster; (2) Particles collide more frequently; (3) A larger fraction of collisions have sufficient energy (≥ activation energy) to result in effective chemical reactions.';
+        'Please refine your answer to state that when the temperature increases, the mass increase is greater as the rusting becomes more serious.';
     }
   }
 
   return {
-    mentionsKineticEnergy,
-    mentionsCollisionFrequency,
-    mentionsEffectiveCollisions,
+    mentionsTemperatureIncrease,
+    mentionsMassIncrease,
+    mentionsRustingSerious,
     isValid,
     feedback,
   };
 }
+
+// Backward compatibility alias
+export type CollisionTheoryEvaluation = TemperatureExplanationEvaluation;
+export const evaluateCollisionTheory = evaluateTemperatureAnswer;
 
 export function validateEvidence(
   question: InquiryQuestion,
@@ -630,63 +636,95 @@ export function validateEvidence(
     };
   }
 
-  // Question 2: Reactants / Essential Conditions (Water & Oxygen)
-  if (question.variableFocus === 'reactants' || question.variableFocus === 'oxygen' || question.variableFocus === 'water') {
-    const hasBothPresent = selectedTrials.some((t) => t.config.water === 'Present' && t.config.oxygen === 'Present');
-    const hasWaterAbsent = selectedTrials.some((t) => t.config.water === 'Not Present');
-    const hasOxygenAbsent = selectedTrials.some((t) => t.config.oxygen === 'Not Present');
+  // Question 2: Effect of Solution pH ('pH') - Must include acidic, neutral, and alkaline at the same temperature
+  if (question.variableFocus === 'pH') {
+    const activeCorrosionTrials = selectedTrials.filter(
+      (t) => t.config.oxygen === 'Present' && t.config.water === 'Present'
+    );
 
-    if (!hasBothPresent) {
+    if (activeCorrosionTrials.length < 3) {
       return {
         isValid: false,
         message: isZh
-          ? '證據不充分：所選實驗均缺少水分或缺少氧氣 (銹蝕速率均為 0.0 mg/day)。為證明水和氧氣是銹蝕的必要條件，必須選取至少一個「同時存在水與氧氣」且有銹蝕發生的實驗作為對照。'
-          : 'Evidence Incomplete: All your selected trials lack either water or oxygen (rate: 0.0 mg/day). To prove that both are essential, you must select at least one trial where BOTH water and oxygen are Present to demonstrate active corrosion.',
+          ? '證據不充分：支持證據必須包含在相同溫度下測試的酸性 (pH 3)、中性 (pH 7) 及鹼性 (pH 12) 三組有水有氧實驗。目前選取少於 3 組有效實驗。'
+          : 'Evidence Incomplete: Supporting evidence must include trials for acidic (pH 3), neutral (pH 7), and alkaline (pH 12) tested at the same temperature with water and oxygen present.',
         comparisonDetails,
       };
     }
 
-    if (!hasWaterAbsent && !hasOxygenAbsent) {
-      return {
-        isValid: false,
-        message: isZh
-          ? '證據不充分：所選實驗均同時存在水與氧氣。為證明水與氧氣各自為不可或缺的必要條件，請選取至少一個「無水 (乾燥空氣)」或「無氧 (去氧水)」的對照實驗 (顯示 0.0 mg/day)。'
-          : 'Evidence Incomplete: All selected trials have both water and oxygen. To prove that both are indispensable, please select at least one control trial lacking water (dry air) or lacking oxygen showing 0.0 mg/day.',
-        comparisonDetails,
-      };
+    // Check if there is any temperature at which all 3 pH values (3, 7, 12) are present
+    const temps = Array.from(new Set(activeCorrosionTrials.map((t) => t.config.temperature)));
+    const matchedTemp = temps.find((temp) => {
+      const phsAtTemp = new Set(
+        activeCorrosionTrials.filter((t) => t.config.temperature === temp).map((t) => t.config.pH)
+      );
+      return phsAtTemp.has(3) && phsAtTemp.has(7) && phsAtTemp.has(12);
+    });
+
+    if (!matchedTemp) {
+      const allPHs = new Set(activeCorrosionTrials.map((t) => t.config.pH));
+      const missingPHs: string[] = [];
+      if (!allPHs.has(3)) missingPHs.push(isZh ? '酸性 (pH 3)' : 'Acidic (pH 3)');
+      if (!allPHs.has(7)) missingPHs.push(isZh ? '中性 (pH 7)' : 'Neutral (pH 7)');
+      if (!allPHs.has(12)) missingPHs.push(isZh ? '鹼性 (pH 12)' : 'Alkaline (pH 12)');
+
+      if (missingPHs.length > 0) {
+        return {
+          isValid: false,
+          message: isZh
+            ? `證據不充分：支持證據必須同時包含相同溫度下的酸性 (pH 3)、中性 (pH 7) 及鹼性 (pH 12) 三組對照實驗。缺漏條件：${missingPHs.join('、')}。`
+            : `Evidence Incomplete: Supporting evidence must include trials for all three conditions: acidic (pH 3), neutral (pH 7), and alkaline (pH 12) at the same temperature. Missing: ${missingPHs.join(', ')}.`,
+          comparisonDetails,
+        };
+      } else {
+        return {
+          isValid: false,
+          message: isZh
+            ? '變量未受控 (非公平測試)：所選的 pH 3、pH 7 及 pH 12 實驗是在不同溫度下進行的。探究 pH 影響時必須控制溫度保持相同 (例如全部在 25°C、或全部在 35°C、或全部在 45°C 進行)。'
+            : 'Uncontrolled Variable: The selected pH 3, pH 7, and pH 12 trials were conducted at different temperatures. To investigate pH as a fair test, temperature must be held constant across all three trials (e.g., all tested at 25°C, 35°C, or 45°C).',
+          comparisonDetails,
+        };
+      }
     }
 
     return {
       isValid: true,
       message: isZh
-        ? '極佳的對照實驗證據：數據清楚證明缺少水 (0.0 mg/day) 或缺少氧氣 (0.0 mg/day) 均無法發生銹蝕，只有在水與氧氣同時存在時鐵才會銹蝕，證實兩者皆為必要條件！'
-        : 'Excellent controlled evidence: Demonstrates that lack of water (0.0 mg/day) or lack of oxygen (0.0 mg/day) completely prevents corrosion, confirming that BOTH water and oxygen are essential conditions for rusting!',
+        ? `有效的對照證據：在相同溫度 (${matchedTemp}°C) 下完整對比 pH 3、pH 7 與 pH 12，證明酸性加快銹蝕，而鹼性抑制鈍化，完全符合公平測試要求。`
+        : `Valid controlled evidence: Comparing pH 3, pH 7, and pH 12 at the same temperature (${matchedTemp}°C) proves that acidic condition accelerates rusting and alkaline condition inhibits it, satisfying fair test requirements.`,
       comparisonDetails,
     };
   }
 
-  // Question 3: Effect of pH ('pH')
-  if (question.variableFocus === 'pH') {
-    const activeCorrosionTrials = selectedTrials.filter((t) => t.config.oxygen === 'Present' && t.config.water === 'Present');
+  // Question 3: Reactants / Essential Conditions (Water & Oxygen) - Must include 3 specific trials
+  if (question.variableFocus === 'reactants' || question.variableFocus === 'oxygen' || question.variableFocus === 'water') {
+    const hasOxygenAndWater = selectedTrials.some(
+      (t) => t.config.oxygen === 'Present' && t.config.water === 'Present'
+    );
+    const hasOxygenOnlyNoWater = selectedTrials.some(
+      (t) => t.config.oxygen === 'Present' && t.config.water === 'Not Present'
+    );
+    const hasWaterOnlyNoOxygen = selectedTrials.some(
+      (t) => t.config.water === 'Present' && t.config.oxygen === 'Not Present'
+    );
 
-    if (activeCorrosionTrials.length < 2) {
-      return {
-        isValid: false,
-        message: isZh
-          ? '證據無效：無氧或乾燥無水條件下任何 pH 均不生銹 (皆為 0.0 mg/day)。為探究 pH 的影響，請選取「存在水且存在氧氣」的實驗。'
-          : 'Invalid Evidence: When oxygen or water is absent, iron cannot rust at any pH (0.0 mg/day for all). To investigate the effect of pH, you must select trials where BOTH Water and Oxygen are "Present".',
-        comparisonDetails,
-      };
+    const missingTrials: string[] = [];
+    if (!hasOxygenAndWater) {
+      missingTrials.push(isZh ? '(1) 同時存在氧氣與水' : '(1) Both oxygen and water present');
+    }
+    if (!hasOxygenOnlyNoWater) {
+      missingTrials.push(isZh ? '(2) 只有氧氣而無水 (乾燥空氣 / 無水 CaCl₂)' : '(2) Oxygen only and absence of water (dry air / CaCl₂)');
+    }
+    if (!hasWaterOnlyNoOxygen) {
+      missingTrials.push(isZh ? '(3) 只有水而無氧氣 (煮沸去氧水)' : '(3) Water only and absence of oxygen (boiled deoxygenated water)');
     }
 
-    const uniquePHs = new Set(activeCorrosionTrials.map((t) => t.config.pH));
-    if (uniquePHs.size < 2) {
-      const singlePH = Array.from(uniquePHs)[0];
+    if (missingTrials.length > 0) {
       return {
         isValid: false,
         message: isZh
-          ? `證據不充分：所選實驗均使用相同 pH (${singlePH})。為探究 pH 效應，請選取對比不同 pH (例如 pH 3 vs pH 7 vs pH 12) 且均有水有氧的實驗。`
-          : `Evidence Incomplete: All selected trials use the same pH (${singlePH}). To prove the effect of pH, select trials comparing different pH values (e.g. pH 3 vs pH 7 vs pH 12) with Water & Oxygen Present.`,
+          ? `證據不充分：支持證據必須包含以下三組對照實驗以確立必要條件：(1) 同時存在氧氣與水；(2) 只有氧氣而無水；(3) 只有水而無氧氣。目前缺漏：${missingTrials.join('、')}。`
+          : `Evidence Incomplete: Supporting evidence must include all three control trials: (1) Both oxygen and water present; (2) Oxygen only and absence of water; (3) Water only and absence of oxygen. Currently missing: ${missingTrials.join(', ')}.`,
         comparisonDetails,
       };
     }
@@ -694,15 +732,17 @@ export function validateEvidence(
     return {
       isValid: true,
       message: isZh
-        ? '有效的對照證據：在有水有氧條件下對照不同 pH 值，證明酸性 pH 3 加快銹蝕，而鹼性 pH 12 鈍化抑制銹蝕。'
-        : 'Valid controlled evidence: Comparing different pH values with water and oxygen present shows that acidic pH 3 accelerates corrosion and alkaline pH 12 inhibits it.',
+        ? '極佳的對照實驗證據：完整提供了 (1) 水氧共存 (有銹蝕)、(2) 有氧無水 (0.0 mg/day)、(3) 有水無氧 (0.0 mg/day) 的三組實驗，無可置疑地確立了水和氧氣兩者皆為鐵銹蝕的必要條件！'
+        : 'Excellent controlled evidence: Successfully includes all three trials: (1) Both oxygen and water present (active rusting), (2) Oxygen only with no water (0.0 mg/day), and (3) Water only with no oxygen (0.0 mg/day), conclusively proving that both water and oxygen are essential conditions for rusting!',
       comparisonDetails,
     };
   }
 
   // Question 4: Effect of Temperature ('temperature')
   if (question.variableFocus === 'temperature') {
-    const activeCorrosionTrials = selectedTrials.filter((t) => t.config.oxygen === 'Present' && t.config.water === 'Present');
+    const activeCorrosionTrials = selectedTrials.filter(
+      (t) => t.config.oxygen === 'Present' && t.config.water === 'Present'
+    );
 
     if (activeCorrosionTrials.length < 2) {
       return {
@@ -714,25 +754,35 @@ export function validateEvidence(
       };
     }
 
-    const temps = activeCorrosionTrials.map((t) => t.config.temperature);
-    const minTemp = Math.min(...temps);
-    const maxTemp = Math.max(...temps);
+    // Check if there are different temperatures tested at the same pH (controlled variable)
+    const phGroups = Array.from(new Set(activeCorrosionTrials.map((t) => t.config.pH)));
+    const matchedPH = phGroups.find((phVal) => {
+      const tempsAtPH = activeCorrosionTrials.filter((t) => t.config.pH === phVal).map((t) => t.config.temperature);
+      const min = Math.min(...tempsAtPH);
+      const max = Math.max(...tempsAtPH);
+      return max - min >= 5;
+    });
 
-    if (maxTemp - minTemp < 5) {
+    if (!matchedPH) {
       return {
         isValid: false,
         message: isZh
-          ? `證據不充分：所選實驗溫度相同 (${minTemp}°C)。為評估溫度效應，請選取不同溫度 (例如 25°C vs 45°C) 且有氧的實驗。`
-          : `Evidence Incomplete: All selected trials are at the same temperature (${minTemp}°C). To evaluate temperature effects, select trials tested at different temperatures (e.g. 25°C vs 45°C) with Oxygen Present.`,
+          ? '證據不充分：公平測試要求在探究溫度影響時保持溶液 pH 相同 (例如均為 pH 7)，並對照不同溫度 (例如 25°C vs 35°C 或 45°C)。'
+          : 'Evidence Incomplete: A fair test requires holding solution pH constant (e.g. all at pH 7) while comparing different temperatures (e.g. 25°C vs 35°C or 45°C) with water and oxygen present.',
         comparisonDetails,
       };
     }
 
+    const trialsAtPH = activeCorrosionTrials.filter((t) => t.config.pH === matchedPH);
+    const temps = trialsAtPH.map((t) => t.config.temperature);
+    const minTemp = Math.min(...temps);
+    const maxTemp = Math.max(...temps);
+
     return {
       isValid: true,
       message: isZh
-        ? `有效的對照證據：對比 ${minTemp}°C 與 ${maxTemp}°C 證明溫度升高會提高粒子碰撞速率與銹蝕形成速度。`
-        : `Valid controlled evidence: Comparing ${minTemp}°C vs ${maxTemp}°C demonstrates that higher temperature increases molecular collision rate and rust formation speed.`,
+        ? `有效的對照證據：在相同 pH ${matchedPH} 下對比 ${minTemp}°C 與 ${maxTemp}°C，證明當溫度升高時，生成鐵銹質量增加較大，銹蝕變得更加嚴重。`
+        : `Valid controlled evidence: Comparing ${minTemp}°C vs ${maxTemp}°C at constant pH ${matchedPH} proves that when temperature increases, the mass increase is greater as rusting becomes more serious.`,
       comparisonDetails,
     };
   }

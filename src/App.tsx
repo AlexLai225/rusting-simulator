@@ -267,7 +267,7 @@ export default function App() {
           <InquirySection
             trials={trials}
             selectedTrialIds={selectedTrialIds}
-            requiredTrialsCount={2}
+            requiredTrialsCount={3}
             lang={lang}
           />
         </section>

@@ -35,7 +35,11 @@ export interface InquiryOption {
   explanation: string;
 }
 
-export type QuestionType = 'multiple-choice' | 'reactants-input' | 'claim-with-collision-theory';
+export type QuestionType =
+  | 'multiple-choice'
+  | 'reactants-input'
+  | 'temperature-explanation'
+  | 'claim-with-collision-theory';
 
 export interface InquiryQuestion {
   id: string;
